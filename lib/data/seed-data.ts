@@ -1,4 +1,4 @@
-import { Category, Author, Article, DailyRate, CurrencyRate, Plan, HomeSlot } from '../types';
+import { Category, Author, Article, DailyRate, CurrencyRate, Plan, HomeSlot, District, Video } from '../types';
 
 export const SEED_CATEGORIES: Category[] = [
   // 20 Top-level categories
@@ -344,4 +344,96 @@ export const SEED_HOME_SLOTS: HomeSlot[] = [
   { slot_key: 'breaking', position: 2, article_id: 'art-2' },
   { slot_key: 'top_markets', position: 0, article_id: 'art-3' },
   { slot_key: 'top_markets', position: 1, article_id: 'art-4' },
+];
+
+export const KERALA_DISTRICTS: District[] = [
+  { id: 'dist-tvm', slug: 'thiruvananthapuram', name_ml: 'തിരുവനന്തപുരം', name_en: 'Thiruvananthapuram', zone: 'south', headquarters_ml: 'തിരുവനന്തപുരം' },
+  { id: 'dist-klm', slug: 'kollam', name_ml: 'കൊല്ലം', name_en: 'Kollam', zone: 'south', headquarters_ml: 'കൊല്ലം' },
+  { id: 'dist-pta', slug: 'pathanamthitta', name_ml: 'പത്തനംതിട്ട', name_en: 'Pathanamthitta', zone: 'south', headquarters_ml: 'പത്തനംതിട്ട' },
+  { id: 'dist-alp', slug: 'alappuzha', name_ml: 'ആലപ്പുഴ', name_en: 'Alappuzha', zone: 'south', headquarters_ml: 'ആലപ്പുഴ' },
+  { id: 'dist-ktm', slug: 'kottayam', name_ml: 'കോട്ടയം', name_en: 'Kottayam', zone: 'central', headquarters_ml: 'കോട്ടയം' },
+  { id: 'dist-idk', slug: 'idukki', name_ml: 'ഇടുക്കി', name_en: 'Idukki', zone: 'central', headquarters_ml: 'പൈനാവ്' },
+  { id: 'dist-ekm', slug: 'ernakulam', name_ml: 'എറണാകുളം (കൊച്ചി)', name_en: 'Ernakulam (Kochi)', zone: 'central', headquarters_ml: 'കാക്കനാട്' },
+  { id: 'dist-tsr', slug: 'thrissur', name_ml: 'തൃശ്ശൂർ', name_en: 'Thrissur', zone: 'central', headquarters_ml: 'തൃശ്ശൂർ' },
+  { id: 'dist-pkd', slug: 'palakkad', name_ml: 'പാലക്കാട്', name_en: 'Palakkad', zone: 'central', headquarters_ml: 'പാലക്കാട്' },
+  { id: 'dist-mpm', slug: 'malappuram', name_ml: 'മലപ്പുറം', name_en: 'Malappuram', zone: 'north', headquarters_ml: 'മലപ്പുറം' },
+  { id: 'dist-kkd', slug: 'kozhikode', name_ml: 'കോഴിക്കോട്', name_en: 'Kozhikode', zone: 'north', headquarters_ml: 'കോഴിക്കോട്' },
+  { id: 'dist-wyd', slug: 'wayanad', name_ml: 'വയനാട്', name_en: 'Wayanad', zone: 'north', headquarters_ml: 'കൽപ്പറ്റ' },
+  { id: 'dist-knr', slug: 'kannur', name_ml: 'കണ്ണൂർ', name_en: 'Kannur', zone: 'north', headquarters_ml: 'കണ്ണൂർ' },
+  { id: 'dist-ksd', slug: 'kasaragod', name_ml: 'കാസർഗോഡ്', name_en: 'Kasaragod', zone: 'north', headquarters_ml: 'കാസർഗോഡ്' },
+];
+
+export const SEED_VIDEOS: Video[] = [
+  {
+    id: 'vid-s1',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'സ്വർണം വാങ്ങുമ്പോൾ ഈ 3 കാര്യങ്ങൾ ഉറപ്പായും ശ്രദ്ധിക്കൂ!',
+    is_short: true,
+    thumbnail_url: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=600&q=80',
+    category: 'ഗോൾഡ് ടിപ്പുകൾ',
+    duration: '0:58',
+    views: 18400,
+    published_at: '2026-10-28T09:00:00Z',
+    created_at: '2026-10-28T09:00:00Z'
+  },
+  {
+    id: 'vid-s2',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'മാസം ₹5,000 SIP വഴി 1 കോടി രൂപ സമ്പാദ്യം നേടാൻ എത്ര വർഷം വേണം?',
+    is_short: true,
+    thumbnail_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80',
+    category: 'SIP & നിക്ഷേപം',
+    duration: '0:45',
+    views: 24500,
+    published_at: '2026-10-27T12:30:00Z',
+    created_at: '2026-10-27T12:30:00Z'
+  },
+  {
+    id: 'vid-s3',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'യുഎഇ ദിർഹം ഇന്നത്തെ നിരക്ക്: നാട്ടിലേക്ക് പണമയക്കാൻ പറ്റിയ സമയമോ?',
+    is_short: true,
+    thumbnail_url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80',
+    category: 'NRI കറൻസി',
+    duration: '0:50',
+    views: 14200,
+    published_at: '2026-10-28T07:15:00Z',
+    created_at: '2026-10-28T07:15:00Z'
+  },
+  {
+    id: 'vid-s4',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'കൊച്ചി ഇൻഫോപാർക്കിൽ പുതിയ 1000 ഐടി തൊഴിലവസരങ്ങൾ പ്രഖ്യാപിച്ചു',
+    is_short: true,
+    thumbnail_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80',
+    category: 'ഐടി & കരിയർ',
+    duration: '0:55',
+    views: 31200,
+    published_at: '2026-10-28T06:00:00Z',
+    created_at: '2026-10-28T06:00:00Z'
+  },
+  {
+    id: 'vid-f1',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'കേരളത്തിലെ സ്വർണവില എന്തുകൊണ്ട് കുതിച്ചുയരുന്നു? ആഗോള വിപണി വിശകലനം',
+    is_short: false,
+    thumbnail_url: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1200&q=80',
+    category: 'സ്പെഷ്യൽ അനാലിസിസ്',
+    duration: '12:45',
+    views: 48900,
+    published_at: '2026-10-28T08:00:00Z',
+    created_at: '2026-10-28T08:00:00Z'
+  },
+  {
+    id: 'vid-f2',
+    youtube_id: 'M7lc1UVf-VE',
+    title: 'ഓഹരി വിപണിയിൽ തുടക്കക്കാർ അറിയേണ്ട 5 അടിസ്ഥാന തത്വങ്ങൾ | The Profit Masterclass',
+    is_short: false,
+    thumbnail_url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+    category: 'ഇൻവെസ്റ്റ്മെന്റ് ക്ലാസ്',
+    duration: '18:20',
+    views: 62100,
+    published_at: '2026-10-27T15:00:00Z',
+    created_at: '2026-10-27T15:00:00Z'
+  }
 ];

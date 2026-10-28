@@ -7,7 +7,9 @@ import {
   Plan,
   HomeSlot,
   Comment,
-  StaffRole
+  StaffRole,
+  District,
+  Video
 } from '../types';
 import {
   SEED_CATEGORIES,
@@ -16,7 +18,9 @@ import {
   SEED_DAILY_RATES,
   SEED_CURRENCIES,
   SEED_PLANS,
-  SEED_HOME_SLOTS
+  SEED_HOME_SLOTS,
+  KERALA_DISTRICTS,
+  SEED_VIDEOS
 } from './seed-data';
 
 // Server-side in-memory state with persistence to fallback seed
@@ -28,6 +32,8 @@ class NewsDataStore {
   private currencies: CurrencyRate[] = [...SEED_CURRENCIES];
   private plans: Plan[] = [...SEED_PLANS];
   private homeSlots: HomeSlot[] = [...SEED_HOME_SLOTS];
+  private districts: District[] = [...KERALA_DISTRICTS];
+  private videos: Video[] = [...SEED_VIDEOS];
   private comments: Comment[] = [
     {
       id: 'comm-1',
@@ -119,6 +125,7 @@ class NewsDataStore {
   getArticles(options: {
     categorySlug?: string;
     authorSlug?: string;
+    districtSlug?: string;
     tag?: string;
     status?: string;
     isPremium?: boolean;
@@ -158,6 +165,10 @@ class NewsDataStore {
       } else {
         list = [];
       }
+    }
+
+    if (options.districtSlug) {
+      list = list.filter(a => a.district === options.districtSlug);
     }
 
     if (options.tag) {
@@ -346,6 +357,57 @@ class NewsDataStore {
   // ================= PLANS =================
   getPlans(): Plan[] {
     return this.plans;
+  }
+
+  // ================= DISTRICTS =================
+  getDistricts(): District[] {
+    return this.districts;
+  }
+
+  getDistrictBySlug(slug: string): District | undefined {
+    return this.districts.find(d => d.slug === slug);
+  }
+
+  // ================= VIDEOS =================
+  getVideos(options: { isShort?: boolean; limit?: number } = {}): Video[] {
+    let list = [...this.videos];
+    if (options.isShort !== undefined) {
+      list = list.filter(v => v.is_short === options.isShort);
+    }
+    list.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+    if (options.limit) {
+      list = list.slice(0, options.limit);
+    }
+    return list;
+  }
+
+  getVideoById(id: string): Video | undefined {
+    return this.videos.find(v => v.id === id || v.youtube_id === id);
+  }
+
+  saveVideo(videoData: Partial<Video> & { youtube_id: string; title: string }): Video {
+    const existingIndex = this.videos.findIndex(v => v.id === videoData.id || v.youtube_id === videoData.youtube_id);
+    const now = new Date().toISOString();
+    if (existingIndex >= 0) {
+      const updated = { ...this.videos[existingIndex], ...videoData };
+      this.videos[existingIndex] = updated;
+      return updated;
+    } else {
+      const newVideo: Video = {
+        id: videoData.id || `vid-${Date.now()}`,
+        youtube_id: videoData.youtube_id,
+        title: videoData.title,
+        category: videoData.category || 'പൊതുവാർത്തകൾ',
+        thumbnail_url: videoData.thumbnail_url || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=600&q=80',
+        is_short: videoData.is_short ?? false,
+        published_at: videoData.published_at || now,
+        duration: videoData.duration || '2:30',
+        views: 0,
+        created_at: now
+      };
+      this.videos.unshift(newVideo);
+      return newVideo;
+    }
   }
 
   // ================= ADMIN STATS =================

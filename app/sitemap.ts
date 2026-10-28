@@ -6,14 +6,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const { articles } = newsStore.getArticles({ limit: 100 });
   const categories = newsStore.getFlatCategories();
 
+  const districts = newsStore.getDistricts();
+
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${siteUrl}`, lastModified: new Date(), changeFrequency: 'always', priority: 1.0 },
     { url: `${siteUrl}/sections`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: `${siteUrl}/districts`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${siteUrl}/videos`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
     { url: `${siteUrl}/tools/gold-rate`, lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 },
     { url: `${siteUrl}/tools/calculators`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${siteUrl}/tools/currency`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
     { url: `${siteUrl}/membership`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
   ];
+
+  const districtRoutes: MetadataRoute.Sitemap = districts.map((d) => ({
+    url: `${siteUrl}/districts/${d.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'daily',
+    priority: 0.8,
+  }));
 
   const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
     url: `${siteUrl}/topic/${c.slug}`,
@@ -29,5 +40,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...articleRoutes];
+  return [...staticRoutes, ...districtRoutes, ...categoryRoutes, ...articleRoutes];
 }

@@ -61,9 +61,32 @@ export interface Article {
   seo_title?: string;
   seo_description?: string;
   tags?: string[];
+  district?: string;
   views?: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface District {
+  id: string;
+  slug: string;
+  name_ml: string;
+  name_en: string;
+  zone: 'south' | 'central' | 'north';
+  headquarters_ml: string;
+}
+
+export interface Video {
+  id: string;
+  youtube_id: string;
+  title: string;
+  category?: string;
+  thumbnail_url?: string;
+  is_short: boolean;
+  published_at: string;
+  duration?: string;
+  views?: number;
+  created_at: string;
 }
 
 export interface DailyRate {

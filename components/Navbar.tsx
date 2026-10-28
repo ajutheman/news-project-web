@@ -206,6 +206,29 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
             );
           })}
 
+          <Link
+            href="/districts"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/districts')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            📍 ജില്ലകൾ
+          </Link>
+
+          <Link
+            href="/videos"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 flex items-center gap-1 ${
+              pathname.startsWith('/videos')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            <span>▶</span>
+            <span>വീഡിയോ &amp; ഷോർട്ട്സ്</span>
+          </Link>
+
           {/* All Sections Button (Answers user's question with best practice drawer/page) */}
           <Link
             href="/sections"

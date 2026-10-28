@@ -5,6 +5,8 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { NewsTicker } from '@/components/NewsTicker';
 import { LiveRatesWidget } from '@/components/LiveRatesWidget';
 import { HomeTabbedSections } from '@/components/HomeTabbedSections';
+import { VideoShortsStrip } from '@/components/VideoShortsStrip';
+import { KeralaDistrictSelector } from '@/components/KeralaDistrictSelector';
 
 export default function HomePage() {
   const heroArticle = newsStore.getHeroArticle();
@@ -13,6 +15,8 @@ export default function HomePage() {
   const dailyRates = newsStore.getDailyRates();
   const currencies = newsStore.getCurrencies();
   const categories = newsStore.getFlatCategories();
+  const shorts = newsStore.getVideos({ isShort: true, limit: 4 });
+  const districts = newsStore.getDistricts();
 
   // Articles for side strips
   const trendingArticles = articles.filter(a => a.id !== heroArticle?.id).slice(0, 4);
@@ -69,6 +73,12 @@ export default function HomePage() {
 
       {/* Tabbed Category Stories */}
       <HomeTabbedSections articles={articles} categories={categories} />
+
+      {/* Hyperlocal 14 Districts News Selector */}
+      <KeralaDistrictSelector districts={districts} />
+
+      {/* YouTube Shorts Reel */}
+      <VideoShortsStrip shorts={shorts} />
 
       {/* Premium Banner Promotion */}
       <section className="bg-gradient-to-r from-amber-900/90 to-amber-950 text-white rounded-xl p-6 md:p-8 relative overflow-hidden shadow-pop">
