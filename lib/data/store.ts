@@ -106,6 +106,9 @@ class NewsDataStore {
           if (Array.isArray(data.dailyRates) && data.dailyRates.length > 0) {
             this.dailyRates = data.dailyRates;
           }
+          if (Array.isArray(data.currencies) && data.currencies.length > 0) {
+            this.currencies = data.currencies;
+          }
           if (Array.isArray(data.comments) && data.comments.length > 0) {
             this.comments = data.comments;
           }
@@ -157,6 +160,7 @@ class NewsDataStore {
           categories: this.categories,
           homeSlots: this.homeSlots,
           dailyRates: this.dailyRates,
+          currencies: this.currencies,
           comments: this.comments,
           videos: this.videos,
           adSlots: this.adSlots,
@@ -478,6 +482,37 @@ class NewsDataStore {
 
   getCurrencies(): CurrencyRate[] {
     return this.currencies;
+  }
+
+  updateCurrency(code: string, rate_to_inr: number): CurrencyRate | undefined {
+    const currency = this.currencies.find(c => c.code.toUpperCase() === code.toUpperCase());
+    if (!currency) return undefined;
+    currency.rate_to_inr = rate_to_inr;
+    this.saveToDisk();
+    return currency;
+  }
+
+  saveCurrency(data: CurrencyRate): CurrencyRate {
+    const existingIndex = this.currencies.findIndex(c => c.code.toUpperCase() === data.code.toUpperCase());
+    if (existingIndex >= 0) {
+      this.currencies[existingIndex] = {
+        ...this.currencies[existingIndex],
+        ...data,
+      };
+      this.saveToDisk();
+      return this.currencies[existingIndex];
+    } else {
+      this.currencies.push(data);
+      this.saveToDisk();
+      return data;
+    }
+  }
+
+  deleteCurrency(code: string): boolean {
+    const initialLen = this.currencies.length;
+    this.currencies = this.currencies.filter(c => c.code.toUpperCase() !== code.toUpperCase());
+    this.saveToDisk();
+    return this.currencies.length < initialLen;
   }
 
   // ================= HOME SLOTS =================

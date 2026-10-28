@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function GoldRateTrackerPage() {
@@ -9,10 +9,34 @@ export default function GoldRateTrackerPage() {
   const [makingChargesPercent, setMakingChargesPercent] = useState<number>(8); // 8% making charge
   const gstPercent = 3; // 3% GST on gold jewellery in India
 
-  const gold22kRatePerGram = 7350;
-  const gold22kRatePerPavan = 58800;
-  const gold24kRatePerGram = 8018;
-  const silverRatePerGram = 103;
+  const [gold22kRatePerGram, setGold22kRatePerGram] = useState(7350);
+  const [gold22kRatePerPavan, setGold22kRatePerPavan] = useState(58800);
+  const [gold24kRatePerGram, setGold24kRatePerGram] = useState(8018);
+  const [silverRatePerGram, setSilverRatePerGram] = useState(103);
+
+  const [gold22kChange, setGold22kChange] = useState(45);
+  const [goldPavanChange, setGoldPavanChange] = useState(360);
+  const [gold24kChange, setGold24kChange] = useState(50);
+  const [silverChange, setSilverChange] = useState(1.5);
+
+  useEffect(() => {
+    fetch('/api/v1/rates')
+      .then(res => res.json())
+      .then(data => {
+        if (data.rates) {
+          const g22 = data.rates.find((r: any) => r.metal === 'gold_22k' && r.unit === 'gram');
+          const p22 = data.rates.find((r: any) => r.metal === 'gold_22k' && r.unit === 'pavan');
+          const g24 = data.rates.find((r: any) => r.metal === 'gold_24k' && r.unit === 'gram');
+          const sil = data.rates.find((r: any) => r.metal === 'silver' && r.unit === 'gram');
+
+          if (g22) { setGold22kRatePerGram(g22.amount_inr); setGold22kChange(g22.change_inr || 0); }
+          if (p22) { setGold22kRatePerPavan(p22.amount_inr); setGoldPavanChange(p22.change_inr || 0); }
+          if (g24) { setGold24kRatePerGram(g24.amount_inr); setGold24kChange(g24.change_inr || 0); }
+          if (sil) { setSilverRatePerGram(sil.amount_inr); setSilverChange(sil.change_inr || 0); }
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const basePrice =
     weightType === 'pavan'
@@ -51,8 +75,8 @@ export default function GoldRateTrackerPage() {
           <span className="text-2xl font-black text-accent mt-1 block">
             ₹{gold22kRatePerPavan.toLocaleString('en-IN')}
           </span>
-          <span className="text-[11px] text-danger font-semibold mt-1 inline-block">
-            ▲ ₹360 (ഇന്ന് കൂടിയത്)
+          <span className={`text-[11px] font-semibold mt-1 inline-block ${goldPavanChange >= 0 ? 'text-danger' : 'text-success'}`}>
+            {goldPavanChange >= 0 ? `▲ ₹${goldPavanChange} (ഇന്ന് കൂടിയത്)` : `▼ ₹${Math.abs(goldPavanChange)} (ഇന്ന് കുറഞ്ഞു)`}
           </span>
         </div>
 
@@ -61,8 +85,8 @@ export default function GoldRateTrackerPage() {
           <span className="text-2xl font-black text-text mt-1 block">
             ₹{gold22kRatePerGram.toLocaleString('en-IN')}
           </span>
-          <span className="text-[11px] text-danger font-semibold mt-1 inline-block">
-            ▲ ₹45 (ഇന്ന് കൂടിയത്)
+          <span className={`text-[11px] font-semibold mt-1 inline-block ${gold22kChange >= 0 ? 'text-danger' : 'text-success'}`}>
+            {gold22kChange >= 0 ? `▲ ₹${gold22kChange} (ഇന്ന് കൂടിയത്)` : `▼ ₹${Math.abs(gold22kChange)} (ഇന്ന് കുറഞ്ഞു)`}
           </span>
         </div>
 
@@ -71,8 +95,8 @@ export default function GoldRateTrackerPage() {
           <span className="text-2xl font-black text-text mt-1 block">
             ₹{gold24kRatePerGram.toLocaleString('en-IN')}
           </span>
-          <span className="text-[11px] text-danger font-semibold mt-1 inline-block">
-            ▲ ₹50 (99.9% പ്യൂരിറ്റി)
+          <span className={`text-[11px] font-semibold mt-1 inline-block ${gold24kChange >= 0 ? 'text-danger' : 'text-success'}`}>
+            {gold24kChange >= 0 ? `▲ ₹${gold24kChange} (99.9% പ്യൂരിറ്റി)` : `▼ ₹${Math.abs(gold24kChange)} (99.9% പ്യൂരിറ്റി)`}
           </span>
         </div>
 
@@ -81,8 +105,8 @@ export default function GoldRateTrackerPage() {
           <span className="text-2xl font-black text-text mt-1 block">
             ₹{silverRatePerGram.toLocaleString('en-IN')}
           </span>
-          <span className="text-[11px] text-danger font-semibold mt-1 inline-block">
-            ▲ ₹1.50 (കിലോഗ്രാമിന് ₹1,03,000)
+          <span className={`text-[11px] font-semibold mt-1 inline-block ${silverChange >= 0 ? 'text-danger' : 'text-success'}`}>
+            {silverChange >= 0 ? `▲ ₹${silverChange}` : `▼ ₹${Math.abs(silverChange)}`}
           </span>
         </div>
       </div>

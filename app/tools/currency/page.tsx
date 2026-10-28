@@ -1,14 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { CurrencyRate } from '@/lib/types';
 import { SEED_CURRENCIES } from '@/lib/data/seed-data';
 
 export default function CurrencyRatesPage() {
+  const [currencies, setCurrencies] = useState<CurrencyRate[]>(SEED_CURRENCIES);
   const [selectedCurrency, setSelectedCurrency] = useState('AED');
   const [amount, setAmount] = useState<number>(1000);
 
-  const current = SEED_CURRENCIES.find(c => c.code === selectedCurrency) || SEED_CURRENCIES[0];
+  useEffect(() => {
+    fetch('/api/v1/rates')
+      .then(res => res.json())
+      .then(data => {
+        if (data.currencies && data.currencies.length > 0) {
+          setCurrencies(data.currencies);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const current = currencies.find(c => c.code === selectedCurrency) || currencies[0] || SEED_CURRENCIES[0];
   const inrResult = (amount * current.rate_to_inr).toFixed(2);
 
   return (
@@ -26,7 +39,7 @@ export default function CurrencyRatesPage() {
           <span>ഗൾഫ് കറൻസി നിരക്കുകൾ (Gulf &amp; Global Exchange Rates)</span>
         </h1>
         <p className="mt-1 text-xs text-text-muted">
-          യു.എ.ഇ ദിർഹം, സൗദി റിയാൽ, ഖത്തർ റിയാൽ, കുവൈത്ത് ദിനാർ അടക്കം വിദേശ കറൻസികളുടെ ഇന്നത്തെ രൂപയുടെ മൂല്യം.
+          യു.എ.ഇ ദിർഹം, സൗദി റിയാൽ, ഖത്തർ റിയാൽ, കുവൈത്ത് ദിനാർ അടക്കം വിദേശ കറൻസികളുടെ ഇന്നത്തെ തത്സമയ രൂപയുടെ മൂല്യം.
         </p>
       </div>
 
@@ -46,7 +59,7 @@ export default function CurrencyRatesPage() {
               onChange={(e) => setSelectedCurrency(e.target.value)}
               className="w-full bg-surface-raised border border-border-input rounded px-3 py-2 text-sm font-semibold text-text"
             >
-              {SEED_CURRENCIES.map((c) => (
+              {currencies.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.flag} {c.code} - {c.name_ml}
                 </option>
@@ -94,7 +107,7 @@ export default function CurrencyRatesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {SEED_CURRENCIES.map((c) => (
+              {currencies.map((c) => (
                 <tr key={c.code} className="hover:bg-surface-raised/60">
                   <td className="py-3 px-6 flex items-center gap-2 font-medium text-text">
                     <span className="text-base">{c.flag}</span>
