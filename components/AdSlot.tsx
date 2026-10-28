@@ -40,7 +40,7 @@ export function AdSlot({ slotKey, className = '', initialConfig, initialAdSense 
   }, [slotKey, initialConfig]);
 
   if (!loaded || !config || !config.is_active || dismissed) {
-    return null;
+    return <div data-ad-slot={slotKey} className="hidden" aria-hidden="true" suppressHydrationWarning />;
   }
 
   const handleAdClick = () => {
@@ -54,7 +54,7 @@ export function AdSlot({ slotKey, className = '', initialConfig, initialAdSense 
   // Sticky mobile anchor ad
   if (slotKey === 'sticky_mobile') {
     return (
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border shadow-2xl p-2 animate-slide-up">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border shadow-2xl p-2 animate-slide-up" suppressHydrationWarning>
         <div className="flex items-center justify-between gap-2 max-w-sm mx-auto">
           <Link
             href={config.direct_link_url || '#'}
@@ -78,7 +78,7 @@ export function AdSlot({ slotKey, className = '', initialConfig, initialAdSense 
   }
 
   return (
-    <div className={`w-full overflow-hidden my-4 text-center ${className}`}>
+    <div className={`w-full overflow-hidden my-4 text-center ${className}`} suppressHydrationWarning>
       {/* Ad Label & Sponsor Disclosure */}
       <div className="text-[10px] text-text-muted uppercase tracking-wider mb-1 flex items-center justify-center gap-1.5 font-semibold">
         <span>പരസ്യം (Advertisement)</span>

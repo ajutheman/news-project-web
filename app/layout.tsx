@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { HydrationFix } from '@/components/HydrationFix';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/components/AuthProvider';
 import { Navbar } from '@/components/Navbar';
@@ -31,8 +32,12 @@ export default function RootLayout({
   const gold22kPavan = rates.find(r => r.metal === 'gold_22k' && r.unit === 'pavan')?.amount_inr || 58800;
 
   return (
-    <html lang="ml" suppressHydrationWarning>
+    <html lang="ml" translate="no" className="notranslate" suppressHydrationWarning>
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       <body className="min-h-screen flex flex-col bg-bg text-text antialiased font-ui selection:bg-accent/20 selection:text-accent">
+        <HydrationFix />
         <ThemeProvider>
           <AuthProvider>
             <Navbar

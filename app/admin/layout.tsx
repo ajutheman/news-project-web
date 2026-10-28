@@ -29,6 +29,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/settings', label: 'സൈറ്റ് സെറ്റിംഗ്സ് (Settings)', icon: '⚙️' },
   ];
 
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="space-y-6">
       {/* Admin Header Bar */}

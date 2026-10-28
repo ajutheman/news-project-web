@@ -46,7 +46,7 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
       <div className="bg-surface-raised border-b border-border text-xs py-1.5 px-4 text-text-muted">
         <div className="max-w-content mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center space-x-3">
-            <span className="font-medium text-text hidden sm:inline">
+            <span className="font-medium text-text hidden sm:inline" suppressHydrationWarning>
               2026 ഒക്ടോബർ 28, ബുധനാഴ്ച
             </span>
 
@@ -105,7 +105,7 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
               <span>പിന്തുണയ്ക്കുക</span>
             </Link>
             <span className="text-border hidden sm:inline">•</span>
-            <Link href="/saved" className="hover:text-accent flex items-center gap-1">
+            <Link href="/saved" className="hover:text-accent flex items-center gap-1" suppressHydrationWarning>
               <span>സേവ് ചെയ്തവ</span>
               {saves.length > 0 && (
                 <span className="bg-accent text-white rounded-pill px-1.5 py-0.2 text-[10px] font-bold">
