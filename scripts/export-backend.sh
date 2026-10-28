@@ -2,7 +2,7 @@
 # export-backend.sh : Prepares and exports the backend repository for news-project-backend
 set -e
 
-BACKEND_DIR="../news-project-backend"
+BACKEND_DIR="export/news-project-backend"
 
 echo "Creating backend repository directory at $BACKEND_DIR..."
 mkdir -p "$BACKEND_DIR"
