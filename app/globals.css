@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f1f5f9;
+    --color-border: #e2e8f0;
+    --color-border-input: #cbd5e1;
+    --color-text: #0f172a;
+    --color-text-muted: #64748b;
+    --color-accent: #dc2626;
+    --color-on-accent: #ffffff;
+    --color-danger: #ef4444;
+    --color-success: #16a34a;
+    --color-warning: #d97706;
+    --color-warning-bg: #fef3c7;
+    --color-premium: #b45309;
+    --color-premium-bg: #fffbeb;
+    --color-inverse-bg: #0f172a;
+    --color-inverse-text: #f8fafc;
+    --color-inverse-muted: #94a3b8;
+
+    --font-ui: var(--font-noto-sans-ml), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-reading: var(--font-noto-serif-ml), Georgia, Cambria, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    --text-xs-size: 0.75rem;
+    --text-xs-line: 1rem;
+    --text-xs-weight: 400;
+
+    --text-sm-size: 0.875rem;
+    --text-sm-line: 1.25rem;
+    --text-sm-weight: 400;
+
+    --text-base-size: 1rem;
+    --text-base-line: 1.5rem;
+    --text-base-weight: 400;
+
+    --text-article-size: 1.125rem;
+    --text-article-line: 1.85rem;
+    --text-article-weight: 400;
+
+    --text-lg-size: 1.125rem;
+    --text-lg-line: 1.75rem;
+    --text-lg-weight: 600;
+
+    --text-xl-size: 1.25rem;
+    --text-xl-line: 1.75rem;
+    --text-xl-weight: 700;
+
+    --text-2xl-size: 1.5rem;
+    --text-2xl-line: 2rem;
+    --text-2xl-weight: 700;
+
+    --text-display-size: 2.25rem;
+    --text-display-line: 2.75rem;
+    --text-display-weight: 800;
+
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-pill: 9999px;
+
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    --shadow-pop: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+    --content-max: 1280px;
+    --article-measure: 68ch;
+
+    --motion-fast: 150ms;
+    --motion-base: 250ms;
+    --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-theme="dark"] {
+    --color-bg: #0b0f19;
+    --color-surface: #111827;
+    --color-surface-raised: #1f2937;
+    --color-border: #374151;
+    --color-border-input: #4b5563;
+    --color-text: #f9fafb;
+    --color-text-muted: #9ca3af;
+    --color-accent: #ef4444;
+    --color-on-accent: #ffffff;
+    --color-danger: #f87171;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-warning-bg: #451a03;
+    --color-premium: #f59e0b;
+    --color-premium-bg: #291e0a;
+    --color-inverse-bg: #f9fafb;
+    --color-inverse-text: #111827;
+    --color-inverse-muted: #6b7280;
+
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+    --shadow-pop: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Custom scrollbar for horizontal categories */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
