@@ -28,6 +28,7 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [edition, setEdition] = useState<'kerala' | 'gulf' | 'global'>('kerala');
 
   // Primary navigation categories (show_in_nav = true)
   const navCategories = categories.filter(c => c.show_in_nav);
@@ -44,32 +45,66 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
       {/* Top Utility Ticker Bar */}
       <div className="bg-surface-raised border-b border-border text-xs py-1.5 px-4 text-text-muted">
         <div className="max-w-content mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center space-x-4">
-            <span className="font-medium text-text">
+          <div className="flex items-center space-x-3">
+            <span className="font-medium text-text hidden sm:inline">
               2026 ഒക്ടോബർ 28, ബുധനാഴ്ച
             </span>
+
+            {/* Worldwide Edition Switcher */}
+            <div className="flex items-center gap-1 bg-surface border border-border px-1.5 py-0.5 rounded-pill text-[11px]">
+              <span className="text-text-muted font-bold text-[10px] hidden md:inline ml-1">പതിപ്പ്:</span>
+              <button
+                type="button"
+                onClick={() => setEdition('kerala')}
+                className={`px-2 py-0.5 rounded-pill transition-colors ${
+                  edition === 'kerala' ? 'bg-accent text-white font-bold' : 'text-text hover:text-accent'
+                }`}
+                title="കേരള എഡിഷൻ"
+              >
+                🌴 കേരളം
+              </button>
+              <button
+                type="button"
+                onClick={() => setEdition('gulf')}
+                className={`px-2 py-0.5 rounded-pill transition-colors ${
+                  edition === 'gulf' ? 'bg-accent text-white font-bold' : 'text-text hover:text-accent'
+                }`}
+                title="ഗൾഫ് & പ്രവാസി വാർത്തകൾ"
+              >
+                🌍 ഗൾഫ് / NRI
+              </button>
+              <button
+                type="button"
+                onClick={() => setEdition('global')}
+                className={`px-2 py-0.5 rounded-pill transition-colors ${
+                  edition === 'global' ? 'bg-accent text-white font-bold' : 'text-text hover:text-accent'
+                }`}
+                title="ഗ്ലോബൽ വാർത്തകൾ"
+              >
+                🌐 ഗ്ലോബൽ
+              </button>
+            </div>
+
             {goldRate && (
               <Link
                 href="/tools/gold-rate"
-                className="hidden sm:inline-flex items-center gap-1.5 text-accent hover:underline font-semibold"
+                className="hidden lg:inline-flex items-center gap-1.5 text-accent hover:underline font-semibold"
               >
                 <span>🟡 സ്വർണം 22K:</span>
                 <span>₹{goldRate.gram.toLocaleString('en-IN')}/g</span>
-                <span className="text-text-muted">|</span>
-                <span>₹{goldRate.pavan.toLocaleString('en-IN')}/പവൻ</span>
               </Link>
             )}
           </div>
 
-          <div className="flex items-center space-x-3">
-            <Link href="/tools/calculators" className="hover:text-accent hidden md:inline">
-              ധനകാര്യ കാൽക്കുലേറ്ററുകൾ
+          <div className="flex items-center space-x-2.5">
+            <Link
+              href="/support"
+              className="hidden sm:inline-flex items-center gap-1 text-accent font-semibold hover:underline"
+            >
+              <span>💖</span>
+              <span>പിന്തുണയ്ക്കുക</span>
             </Link>
-            <span className="text-border hidden md:inline">•</span>
-            <Link href="/tools/currency" className="hover:text-accent hidden md:inline">
-              ഗൾഫ് കറൻസി
-            </Link>
-            <span className="text-border hidden md:inline">•</span>
+            <span className="text-border hidden sm:inline">•</span>
             <Link href="/saved" className="hover:text-accent flex items-center gap-1">
               <span>സേവ് ചെയ്തവ</span>
               {saves.length > 0 && (
@@ -85,14 +120,13 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            {user?.role && ['admin', 'editor', 'author'].includes(user.role) && (
-              <Link
-                href="/admin"
-                className="bg-accent text-white px-2 py-0.5 rounded text-xs font-semibold hover:opacity-90"
-              >
-                അഡ്മിൻ പാനൽ
-              </Link>
-            )}
+            <Link
+              href="/admin/login"
+              className="bg-accent/10 hover:bg-accent hover:text-white text-accent px-2.5 py-1 rounded-pill text-[11px] font-bold transition-all border border-accent/20"
+              title="സ്റ്റാഫ് & എഡിറ്റോറിയൽ ലോഗിൻ"
+            >
+              🔐 അഡ്മിൻ
+            </Link>
           </div>
         </div>
       </div>
@@ -229,6 +263,62 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
             <span>വീഡിയോ &amp; ഷോർട്ട്സ്</span>
           </Link>
 
+          {/* Revenue Services Hubs */}
+          <Link
+            href="/directory"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/directory')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            💼 ബിസിനസ്സ് ഡയറക്ടറി
+          </Link>
+
+          <Link
+            href="/jobs"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/jobs')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            👔 ജോബ്സ്
+          </Link>
+
+          <Link
+            href="/events"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/events')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            🎟 ഇവന്റുകൾ
+          </Link>
+
+          <Link
+            href="/classifieds"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/classifieds')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            📢 ക്ലാസിഫൈഡ്സ്
+          </Link>
+
+          <Link
+            href="/reports"
+            className={`py-2.5 px-3 whitespace-nowrap transition-colors border-b-2 ${
+              pathname.startsWith('/reports')
+                ? 'border-accent text-accent font-bold'
+                : 'border-transparent text-text hover:text-accent'
+            }`}
+          >
+            📊 റിപ്പോർട്ടുകൾ
+          </Link>
+
           {/* All Sections Button (Answers user's question with best practice drawer/page) */}
           <Link
             href="/sections"
@@ -290,6 +380,54 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
 
             <div className="pt-4 border-t border-border space-y-2">
               <div className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
+                ബിസിനസ്സ് &amp; സർവീസുകൾ
+              </div>
+              <Link
+                href="/directory"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm hover:text-accent"
+              >
+                💼 ബിസിനസ്സ് ഡയറക്ടറി
+              </Link>
+              <Link
+                href="/jobs"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm hover:text-accent"
+              >
+                👔 തൊഴിൽ അവസരങ്ങൾ (Jobs)
+              </Link>
+              <Link
+                href="/events"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm hover:text-accent"
+              >
+                🎟 ഇവന്റുകൾ &amp; അവാർഡുകൾ
+              </Link>
+              <Link
+                href="/classifieds"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm hover:text-accent"
+              >
+                📢 ക്ലാസിഫൈഡ്സ് പരസ്യങ്ങൾ
+              </Link>
+              <Link
+                href="/reports"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm hover:text-accent"
+              >
+                📊 റിസർച്ച് റിപ്പോർട്ടുകൾ
+              </Link>
+              <Link
+                href="/support"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-1.5 px-3 text-sm text-accent font-semibold hover:underline"
+              >
+                💖 വായനക്കാരുടെ പിന്തുണ (Support)
+              </Link>
+            </div>
+
+            <div className="pt-4 border-t border-border space-y-2">
+              <div className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">
                 യൂട്ടിലിറ്റി &amp; ടൂളുകൾ
               </div>
               <Link
@@ -321,11 +459,11 @@ export function Navbar({ categories, goldRate }: NavbarProps) {
                 🔖 സേവ് ചെയ്ത ലേഖനങ്ങൾ
               </Link>
               <Link
-                href="/admin"
+                href="/admin/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block py-2 px-3 text-sm bg-accent text-white rounded font-bold text-center mt-3"
               >
-                അഡ്മിൻ / എഡിറ്റർ പാനൽ
+                🔐 സ്റ്റാഫ് &amp; അഡ്മിൻ ലോഗിൻ
               </Link>
             </div>
           </div>

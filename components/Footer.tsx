@@ -74,27 +74,28 @@ export function Footer() {
 
           {/* Tools & Utilities */}
           <div>
-            <h3 className="text-text font-bold text-xs uppercase tracking-wider mb-3">ടൂളുകൾ &amp; യൂട്ടിലിറ്റി</h3>
+            <h3 className="text-text font-bold text-xs uppercase tracking-wider mb-3">സേവനങ്ങളും ടൂളുകളും</h3>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/tools/gold-rate" className="hover:text-accent">ഇന്നത്തെ സ്വർണവില (Kerala Gold)</Link></li>
-              <li><Link href="/tools/calculators" className="hover:text-accent">SIP കാൽക്കുലേറ്റർ</Link></li>
-              <li><Link href="/tools/calculators" className="hover:text-accent">ഭവന വായ്പ EMI കാൽക്കുലേറ്റർ</Link></li>
-              <li><Link href="/tools/currency" className="hover:text-accent">ഗൾഫ് കറൻസി നിരക്കുകൾ</Link></li>
-              <li><Link href="/membership" className="text-premium font-semibold hover:underline">പ്രോഫിറ്റ് പ്രീമിയം അംഗത്വം</Link></li>
-              <li><Link href="/saved" className="hover:text-accent">സേവ് ചെയ്ത ലേഖനങ്ങൾ</Link></li>
+              <li><Link href="/directory" className="hover:text-accent font-medium">💼 ബിസിനസ്സ് ഡയറക്ടറി</Link></li>
+              <li><Link href="/jobs" className="hover:text-accent font-medium">👔 തൊഴിൽ അവസരങ്ങൾ (Jobs)</Link></li>
+              <li><Link href="/events" className="hover:text-accent font-medium">🎟 ഇവന്റുകൾ &amp; അവാർഡുകൾ</Link></li>
+              <li><Link href="/classifieds" className="hover:text-accent font-medium">📢 ക്ലാസിഫൈഡ്സ് പരസ്യങ്ങൾ</Link></li>
+              <li><Link href="/reports" className="hover:text-accent font-medium">📊 റിസർച്ച് റിപ്പോർട്ടുകൾ</Link></li>
+              <li><Link href="/brand-connect" className="hover:text-accent font-medium">✨ ബ്രാൻഡ് കണക്ട്</Link></li>
+              <li><Link href="/support" className="text-accent font-bold hover:underline">💖 വായനക്കാരുടെ പിന്തുണ</Link></li>
             </ul>
           </div>
 
           {/* Trust & Legal */}
           <div>
-            <h3 className="text-text font-bold text-xs uppercase tracking-wider mb-3">പോളിസി &amp; ബന്ധപ്പെടാൻ</h3>
+            <h3 className="text-text font-bold text-xs uppercase tracking-wider mb-3">പോളിസി &amp; അഡ്മിൻ</h3>
             <ul className="space-y-2 text-xs">
               <li><Link href="/about" className="hover:text-accent">ഞങ്ങളെക്കുറിച്ച് (About Us)</Link></li>
               <li><Link href="/editorial-policy" className="hover:text-accent">എഡിറ്റോറിയൽ പോളിസി</Link></li>
               <li><Link href="/topic/fact-check" className="hover:text-accent">ഫാക്ട് ചെക്ക് (Fact Check)</Link></li>
               <li><Link href="/grievance" className="hover:text-accent">പരാതി പരിഹാരം (Grievance)</Link></li>
               <li><Link href="/privacy" className="hover:text-accent">പ്രൈവസി പോളിസി (DPDP Act)</Link></li>
-              <li><Link href="/admin" className="text-accent font-semibold hover:underline">എഡിറ്റോറിയൽ ലോഗിൻ / CMS</Link></li>
+              <li><Link href="/admin/login" className="text-accent font-bold hover:underline">🔐 സ്റ്റാഫ് &amp; അഡ്മിൻ ലോഗിൻ</Link></li>
             </ul>
           </div>
         </div>

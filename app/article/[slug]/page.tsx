@@ -9,6 +9,7 @@ import { ArticleReactions } from '@/components/ArticleReactions';
 import { ArticleComments } from '@/components/ArticleComments';
 import { ArticleReaderView } from '@/components/ArticleReaderView';
 import { LiveRatesWidget } from '@/components/LiveRatesWidget';
+import { AdSlot } from '@/components/AdSlot';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -178,6 +179,11 @@ export default async function ArticlePage({ params }: Props) {
             {/* Interactive Reader View with Text Size controls and Premium Paywall gate */}
             <ArticleReaderView article={article} />
 
+            {/* In-Article Advertisement Slot */}
+            <div className="py-2">
+              <AdSlot slotKey="article_middle" />
+            </div>
+
             {/* Tags Strip */}
             {article.tags && article.tags.length > 0 && (
               <div className="pt-4 border-t border-border flex flex-wrap items-center gap-2">
@@ -205,6 +211,9 @@ export default async function ArticlePage({ params }: Props) {
           <aside className="lg:col-span-4 space-y-6">
             <LiveRatesWidget dailyRates={dailyRates} currencies={currencies} />
 
+            {/* Sidebar Advertisement Slot */}
+            <AdSlot slotKey="sidebar_banner" />
+
             {/* Related Articles */}
             {filteredRelated.length > 0 && (
               <div className="bg-surface border border-border rounded-lg p-5 shadow-card">
@@ -220,6 +229,9 @@ export default async function ArticlePage({ params }: Props) {
             )}
           </aside>
         </div>
+
+        {/* Sticky Mobile Bottom Ad Slot */}
+        <AdSlot slotKey="sticky_mobile" />
       </article>
     </>
   );

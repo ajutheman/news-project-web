@@ -9,7 +9,16 @@ import {
   Comment,
   StaffRole,
   District,
-  Video
+  Video,
+  AdSlotConfig,
+  AdSenseSettings,
+  BusinessListing,
+  JobListing,
+  NewsEvent,
+  ClassifiedAd,
+  ResearchReport,
+  StaffUser,
+  SiteSettings
 } from '../types';
 import {
   SEED_CATEGORIES,
@@ -20,7 +29,16 @@ import {
   SEED_PLANS,
   SEED_HOME_SLOTS,
   KERALA_DISTRICTS,
-  SEED_VIDEOS
+  SEED_VIDEOS,
+  SEED_AD_SLOTS,
+  SEED_ADSENSE,
+  SEED_BUSINESSES,
+  SEED_JOBS,
+  SEED_EVENTS,
+  SEED_CLASSIFIEDS,
+  SEED_REPORTS,
+  SEED_STAFF_USERS,
+  SEED_SITE_SETTINGS
 } from './seed-data';
 
 // Server-side in-memory state with persistence to local cache
@@ -34,6 +52,15 @@ class NewsDataStore {
   private homeSlots: HomeSlot[] = [...SEED_HOME_SLOTS];
   private districts: District[] = [...KERALA_DISTRICTS];
   private videos: Video[] = [...SEED_VIDEOS];
+  private adSlots: AdSlotConfig[] = [...SEED_AD_SLOTS];
+  private adsense: AdSenseSettings = { ...SEED_ADSENSE };
+  private businesses: BusinessListing[] = [...SEED_BUSINESSES];
+  private jobs: JobListing[] = [...SEED_JOBS];
+  private events: NewsEvent[] = [...SEED_EVENTS];
+  private classifieds: ClassifiedAd[] = [...SEED_CLASSIFIEDS];
+  private reports: ResearchReport[] = [...SEED_REPORTS];
+  private staffUsers: StaffUser[] = [...SEED_STAFF_USERS];
+  private siteSettings: SiteSettings = { ...SEED_SITE_SETTINGS };
   private comments: Comment[] = [
     {
       id: 'comm-1',
@@ -85,6 +112,33 @@ class NewsDataStore {
           if (Array.isArray(data.videos) && data.videos.length > 0) {
             this.videos = data.videos;
           }
+          if (Array.isArray(data.adSlots) && data.adSlots.length > 0) {
+            this.adSlots = data.adSlots;
+          }
+          if (data.adsense && data.adsense.publisher_id) {
+            this.adsense = data.adsense;
+          }
+          if (Array.isArray(data.businesses) && data.businesses.length > 0) {
+            this.businesses = data.businesses;
+          }
+          if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+            this.jobs = data.jobs;
+          }
+          if (Array.isArray(data.events) && data.events.length > 0) {
+            this.events = data.events;
+          }
+          if (Array.isArray(data.classifieds) && data.classifieds.length > 0) {
+            this.classifieds = data.classifieds;
+          }
+          if (Array.isArray(data.reports) && data.reports.length > 0) {
+            this.reports = data.reports;
+          }
+          if (Array.isArray(data.staffUsers) && data.staffUsers.length > 0) {
+            this.staffUsers = data.staffUsers;
+          }
+          if (data.siteSettings && data.siteSettings.site_name_ml) {
+            this.siteSettings = data.siteSettings;
+          }
         }
       }
     } catch {
@@ -104,7 +158,16 @@ class NewsDataStore {
           homeSlots: this.homeSlots,
           dailyRates: this.dailyRates,
           comments: this.comments,
-          videos: this.videos
+          videos: this.videos,
+          adSlots: this.adSlots,
+          adsense: this.adsense,
+          businesses: this.businesses,
+          jobs: this.jobs,
+          events: this.events,
+          classifieds: this.classifieds,
+          reports: this.reports,
+          staffUsers: this.staffUsers,
+          siteSettings: this.siteSettings
         };
         fs.writeFileSync(cachePath, JSON.stringify(data, null, 2), 'utf8');
       }
@@ -529,8 +592,362 @@ class NewsDataStore {
     return saved;
   }
 
+  // ================= ADVERTISING & ADSENSE =================
+  getAdSlots(): AdSlotConfig[] {
+    return this.adSlots;
+  }
+
+  getAdSlotByKey(slotKey: AdSlotConfig['slot_key']): AdSlotConfig | undefined {
+    return this.adSlots.find(s => s.slot_key === slotKey);
+  }
+
+  updateAdSlot(slotKey: AdSlotConfig['slot_key'], data: Partial<AdSlotConfig>): AdSlotConfig | undefined {
+    const slot = this.adSlots.find(s => s.slot_key === slotKey);
+    if (!slot) return undefined;
+    Object.assign(slot, data);
+    this.saveToDisk();
+    return slot;
+  }
+
+  recordAdClick(slotKey: AdSlotConfig['slot_key']) {
+    const slot = this.adSlots.find(s => s.slot_key === slotKey);
+    if (slot) {
+      slot.clicks = (slot.clicks || 0) + 1;
+      this.saveToDisk();
+    }
+  }
+
+  recordAdImpression(slotKey: AdSlotConfig['slot_key']) {
+    const slot = this.adSlots.find(s => s.slot_key === slotKey);
+    if (slot) {
+      slot.impressions = (slot.impressions || 0) + 1;
+      this.saveToDisk();
+    }
+  }
+
+  getAdSenseSettings(): AdSenseSettings {
+    return this.adsense;
+  }
+
+  updateAdSenseSettings(data: Partial<AdSenseSettings>): AdSenseSettings {
+    this.adsense = { ...this.adsense, ...data };
+    this.saveToDisk();
+    return this.adsense;
+  }
+
+  // ================= BUSINESS DIRECTORY =================
+  getBusinesses(options: { category?: string; district?: string; search?: string } = {}): BusinessListing[] {
+    let list = [...this.businesses];
+    if (options.category) {
+      list = list.filter(b => (b.category || b.category_ml || '').toLowerCase().includes(options.category!.toLowerCase()));
+    }
+    if (options.district) {
+      list = list.filter(b => b.district === options.district);
+    }
+    if (options.search) {
+      const q = options.search.toLowerCase();
+      list = list.filter(b =>
+        b.name_ml.toLowerCase().includes(q) ||
+        b.name_en.toLowerCase().includes(q) ||
+        (b.city || '').toLowerCase().includes(q) ||
+        (b.category || b.category_ml || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }
+
+  getBusinessById(id: string): BusinessListing | undefined {
+    return this.businesses.find(b => b.id === id);
+  }
+
+  saveBusiness(data: Partial<BusinessListing> & { name_ml: string; phone: string; category: string }): BusinessListing {
+    const idx = data.id ? this.businesses.findIndex(b => b.id === data.id) : -1;
+    if (idx >= 0) {
+      this.businesses[idx] = { ...this.businesses[idx], ...data };
+      this.saveToDisk();
+      return this.businesses[idx];
+    } else {
+      const newBiz: BusinessListing = {
+        id: data.id || `biz-${Date.now()}`,
+        name_ml: data.name_ml,
+        name_en: data.name_en || data.name_ml,
+        category: data.category,
+        district: data.district,
+        city: data.city || 'കേരളം',
+        description: data.description || '',
+        phone: data.phone,
+        whatsapp: data.whatsapp,
+        email: data.email,
+        website: data.website,
+        address: data.address || '',
+        logo_url: data.logo_url || 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=200&h=200&q=80',
+        tier: data.tier || 'free',
+        is_verified: data.is_verified ?? true,
+        views: 0,
+        created_at: new Date().toISOString()
+      };
+      this.businesses.unshift(newBiz);
+      this.saveToDisk();
+      return newBiz;
+    }
+  }
+
+  deleteBusiness(id: string): boolean {
+    const len = this.businesses.length;
+    this.businesses = this.businesses.filter(b => b.id !== id);
+    this.saveToDisk();
+    return this.businesses.length < len;
+  }
+
+  // ================= JOBS & RECRUITMENT =================
+  getJobs(options: { region?: string; jobType?: string; search?: string } = {}): JobListing[] {
+    let list = [...this.jobs];
+    if (options.region) {
+      list = list.filter(j => j.region === options.region);
+    }
+    if (options.jobType) {
+      list = list.filter(j => j.job_type === options.jobType);
+    }
+    if (options.search) {
+      const q = options.search.toLowerCase();
+      list = list.filter(j =>
+        (j.title || j.title_ml || '').toLowerCase().includes(q) ||
+        j.company_name.toLowerCase().includes(q) ||
+        (j.location || j.district || j.gulf_country || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }
+
+  getJobById(id: string): JobListing | undefined {
+    return this.jobs.find(j => j.id === id);
+  }
+
+  saveJob(data: Partial<JobListing> & { title: string; company_name: string }): JobListing {
+    const idx = data.id ? this.jobs.findIndex(j => j.id === data.id) : -1;
+    if (idx >= 0) {
+      this.jobs[idx] = { ...this.jobs[idx], ...data };
+      this.saveToDisk();
+      return this.jobs[idx];
+    } else {
+      const newJob: JobListing = {
+        id: data.id || `job-${Date.now()}`,
+        title: data.title,
+        company_name: data.company_name,
+        company_logo: data.company_logo || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=100&h=100&q=80',
+        location: data.location || 'കേരളം',
+        region: data.region || 'kerala',
+        job_type: data.job_type || 'Full-time',
+        salary_range: data.salary_range,
+        experience: data.experience,
+        description: data.description || '',
+        apply_url_or_email: data.apply_url_or_email || 'careers@theprofit.in',
+        is_featured: data.is_featured ?? false,
+        created_at: new Date().toISOString()
+      };
+      this.jobs.unshift(newJob);
+      this.saveToDisk();
+      return newJob;
+    }
+  }
+
+  deleteJob(id: string): boolean {
+    const len = this.jobs.length;
+    this.jobs = this.jobs.filter(j => j.id !== id);
+    this.saveToDisk();
+    return this.jobs.length < len;
+  }
+
+  // ================= EVENTS & AWARDS =================
+  getEvents(): NewsEvent[] {
+    return this.events;
+  }
+
+  getEventById(id: string): NewsEvent | undefined {
+    return this.events.find(e => e.id === id);
+  }
+
+  saveEvent(data: Partial<NewsEvent> & { title: string; date_string: string }): NewsEvent {
+    const idx = data.id ? this.events.findIndex(e => e.id === data.id) : -1;
+    if (idx >= 0) {
+      this.events[idx] = { ...this.events[idx], ...data };
+      this.saveToDisk();
+      return this.events[idx];
+    } else {
+      const newEvt: NewsEvent = {
+        id: data.id || `evt-${Date.now()}`,
+        title: data.title,
+        subtitle: data.subtitle,
+        event_type: data.event_type || 'conference',
+        date_string: data.date_string,
+        location_or_platform: data.location_or_platform || 'കൊച്ചി',
+        ticket_price_inr: data.ticket_price_inr ?? 0,
+        ticket_link: data.ticket_link,
+        image_url: data.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+        description: data.description || '',
+        sponsor_names: data.sponsor_names || [],
+        is_featured: data.is_featured ?? false,
+        created_at: new Date().toISOString()
+      };
+      this.events.unshift(newEvt);
+      this.saveToDisk();
+      return newEvt;
+    }
+  }
+
+  deleteEvent(id: string): boolean {
+    const len = this.events.length;
+    this.events = this.events.filter(e => e.id !== id);
+    this.saveToDisk();
+    return this.events.length < len;
+  }
+
+  // ================= CLASSIFIEDS =================
+  getClassifieds(options: { category?: string; district?: string } = {}): ClassifiedAd[] {
+    let list = [...this.classifieds];
+    if (options.category) {
+      list = list.filter(c => c.category === options.category);
+    }
+    if (options.district) {
+      list = list.filter(c => c.district === options.district);
+    }
+    return list;
+  }
+
+  saveClassified(data: Partial<ClassifiedAd> & { title: string; contact_phone: string; district: string }): ClassifiedAd {
+    const idx = data.id ? this.classifieds.findIndex(c => c.id === data.id) : -1;
+    if (idx >= 0) {
+      this.classifieds[idx] = { ...this.classifieds[idx], ...data };
+      this.saveToDisk();
+      return this.classifieds[idx];
+    } else {
+      const newClf: ClassifiedAd = {
+        id: data.id || `clf-${Date.now()}`,
+        title: data.title,
+        category: data.category || 'commercial',
+        district: data.district,
+        price_inr: data.price_inr,
+        description: data.description || '',
+        contact_name: data.contact_name || 'പരസ്യദാതാവ്',
+        contact_phone: data.contact_phone,
+        contact_whatsapp: data.contact_whatsapp,
+        image_url: data.image_url || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80',
+        is_approved: data.is_approved ?? true,
+        created_at: new Date().toISOString()
+      };
+      this.classifieds.unshift(newClf);
+      this.saveToDisk();
+      return newClf;
+    }
+  }
+
+  deleteClassified(id: string): boolean {
+    const len = this.classifieds.length;
+    this.classifieds = this.classifieds.filter(c => c.id !== id);
+    this.saveToDisk();
+    return this.classifieds.length < len;
+  }
+
+  // ================= RESEARCH REPORTS =================
+  getReports(): ResearchReport[] {
+    return this.reports;
+  }
+
+  saveReport(data: Partial<ResearchReport> & { title: string; download_url: string }): ResearchReport {
+    const idx = data.id ? this.reports.findIndex(r => r.id === data.id) : -1;
+    if (idx >= 0) {
+      this.reports[idx] = { ...this.reports[idx], ...data };
+      this.saveToDisk();
+      return this.reports[idx];
+    } else {
+      const newRep: ResearchReport = {
+        id: data.id || `rep-${Date.now()}`,
+        title: data.title,
+        category: data.category || 'ഇക്കണോമിക്സ്',
+        pages_count: data.pages_count || 30,
+        format: 'PDF',
+        price_inr: data.price_inr ?? 0,
+        is_premium: data.is_premium ?? false,
+        cover_image_url: data.cover_image_url || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80',
+        summary: data.summary || '',
+        download_url: data.download_url,
+        downloads_count: 0,
+        published_at: new Date().toISOString()
+      };
+      this.reports.unshift(newRep);
+      this.saveToDisk();
+      return newRep;
+    }
+  }
+
+  deleteReport(id: string): boolean {
+    const len = this.reports.length;
+    this.reports = this.reports.filter(r => r.id !== id);
+    this.saveToDisk();
+    return this.reports.length < len;
+  }
+
+  // ================= STAFF USERS & PERMISSIONS =================
+  getStaffUsers(): StaffUser[] {
+    return this.staffUsers;
+  }
+
+  getStaffUserById(id: string): StaffUser | undefined {
+    return this.staffUsers.find(u => u.id === id || u.email === id);
+  }
+
+  saveStaffUser(data: Partial<StaffUser> & { email: string; role: StaffRole; name?: string; display_name?: string }): StaffUser {
+    const idx = data.id ? this.staffUsers.findIndex(u => u.id === data.id || u.email === data.email) : -1;
+    if (idx >= 0) {
+      this.staffUsers[idx] = { ...this.staffUsers[idx], ...data };
+      this.saveToDisk();
+      return this.staffUsers[idx];
+    } else {
+      const newUser: StaffUser = {
+        id: data.id || `user-${Date.now()}`,
+        email: data.email,
+        name: data.name || data.display_name || 'Staff Member',
+        display_name: data.display_name || data.name || 'Staff Member',
+        role: data.role,
+        permissions: data.permissions || {
+          can_publish: data.role === 'super_admin' || data.role === 'editor',
+          can_manage_ads: data.role === 'super_admin' || data.role === 'ad_manager',
+          can_manage_categories: data.role === 'super_admin' || data.role === 'editor',
+          can_manage_users: data.role === 'super_admin',
+          can_moderate_comments: true,
+          can_manage_business: true
+        },
+        status: data.status || 'active',
+        is_active: data.is_active ?? true,
+        created_at: new Date().toISOString()
+      };
+      this.staffUsers.push(newUser);
+      this.saveToDisk();
+      return newUser;
+    }
+  }
+
+  deleteStaffUser(id: string): boolean {
+    const len = this.staffUsers.length;
+    this.staffUsers = this.staffUsers.filter(u => u.id !== id);
+    this.saveToDisk();
+    return this.staffUsers.length < len;
+  }
+
+  // ================= SITE MASTER SETTINGS =================
+  getSiteSettings(): SiteSettings {
+    return this.siteSettings;
+  }
+
+  updateSiteSettings(data: Partial<SiteSettings>): SiteSettings {
+    this.siteSettings = { ...this.siteSettings, ...data };
+    this.saveToDisk();
+    return this.siteSettings;
+  }
+
   // ================= ADMIN STATS =================
   getAdminStats() {
+    const activeAds = this.adSlots.filter(s => s.is_active).length;
     return {
       totalArticles: this.articles.length,
       publishedArticles: this.articles.filter(a => a.status === 'published').length,
@@ -540,7 +957,17 @@ class NewsDataStore {
       categoriesCount: this.categories.length,
       authorsCount: this.authors.length,
       pendingCommentsCount: this.comments.filter(c => c.status === 'pending').length,
-      totalViews: this.articles.reduce((acc, a) => acc + (a.views || 0), 0)
+      totalViews: this.articles.reduce((acc, a) => acc + (a.views || 0), 0),
+      businessesCount: this.businesses.length,
+      activeJobsCount: this.jobs.length,
+      eventsCount: this.events.length,
+      classifiedsCount: this.classifieds.length,
+      reportsCount: this.reports.length,
+      staffCount: this.staffUsers.length,
+      activeAdsCount: activeAds,
+      activeAdSlots: activeAds,
+      totalAdImpressions: this.adSlots.reduce((acc, s) => acc + (s.impressions || 0), 0),
+      totalAdClicks: this.adSlots.reduce((acc, s) => acc + (s.clicks || 0), 0)
     };
   }
 }

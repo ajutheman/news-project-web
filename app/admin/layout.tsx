@@ -15,11 +15,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin', label: 'ഡാഷ്‌ബോർഡ്', icon: '📊' },
     { href: '/admin/articles', label: 'ലേഖനങ്ങൾ (Articles)', icon: '📝' },
     { href: '/admin/articles/new', label: '+ പുതിയ വാർത്ത', icon: '✨' },
+    { href: '/admin/ads', label: 'പരസ്യങ്ങൾ (Ads & AdSense)', icon: '💰' },
+    { href: '/admin/directory', label: 'ഡയറക്ടറി (Directory)', icon: '💼' },
+    { href: '/admin/jobs', label: 'തൊഴിൽ അവസരങ്ങൾ (Jobs)', icon: '👔' },
+    { href: '/admin/events', label: 'ഇവന്റുകൾ & അവാർഡുകൾ', icon: '🎟️' },
+    { href: '/admin/classifieds', label: 'ക്ലാസിഫൈഡ്സ് (Classifieds)', icon: '📢' },
+    { href: '/admin/reports', label: 'റിപ്പോർട്ടുകൾ (Reports)', icon: '📑' },
     { href: '/admin/categories', label: 'വിഭാഗങ്ങൾ (Categories)', icon: '🗂️' },
     { href: '/admin/featured', label: 'ഹോം സ്ലോട്ടുകൾ (Featured)', icon: '📌' },
     { href: '/admin/rates', label: 'സ്വർണ നിരക്കുകൾ (Rates)', icon: '🟡' },
     { href: '/admin/comments', label: 'അഭിപ്രായങ്ങൾ (Comments)', icon: '💬' },
-    { href: '/admin/roles', label: 'സ്റ്റാഫ് & റോളുകൾ (Roles)', icon: '👥' },
+    { href: '/admin/users', label: 'സ്റ്റാഫ് & അനുമതികൾ (Users)', icon: '👥' },
+    { href: '/admin/settings', label: 'സൈറ്റ് സെറ്റിംഗ്സ് (Settings)', icon: '⚙️' },
   ];
 
   return (
@@ -46,15 +53,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onChange={(e) => setRole(e.target.value as any)}
             className="bg-surface-raised border border-border-input rounded px-2 py-1 text-xs font-semibold text-text"
           >
-            <option value="admin">Admin (അഡ്മിൻ)</option>
+            <option value="admin">Super Admin (അഡ്മിൻ)</option>
             <option value="editor">Editor (എഡിറ്റർ)</option>
             <option value="author">Author (ലേഖകൻ)</option>
             <option value="reader">Reader (വായനക്കാരൻ)</option>
           </select>
 
           <Link
+            href="/admin/login"
+            className="bg-surface-raised hover:bg-border text-text px-2.5 py-1 rounded transition-colors"
+          >
+            🚪 ലോഗൗട്ട്
+          </Link>
+
+          <Link
             href="/"
-            className="bg-surface-raised hover:bg-border text-text font-bold px-3 py-1.5 rounded transition-colors"
+            className="bg-accent text-white font-bold px-3 py-1.5 rounded transition-opacity hover:opacity-90"
           >
             വെബ്‌സൈറ്റ് കാണുക ↗
           </Link>

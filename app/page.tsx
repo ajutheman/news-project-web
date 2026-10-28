@@ -7,6 +7,7 @@ import { LiveRatesWidget } from '@/components/LiveRatesWidget';
 import { HomeTabbedSections } from '@/components/HomeTabbedSections';
 import { VideoShortsStrip } from '@/components/VideoShortsStrip';
 import { KeralaDistrictSelector } from '@/components/KeralaDistrictSelector';
+import { AdSlot } from '@/components/AdSlot';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,9 @@ export default function HomePage() {
       {/* Breaking News Ticker */}
       <NewsTicker articles={breakingNews} />
 
+      {/* Top Header Leaderboard Ad Banner (Google AdSense / Direct) */}
+      <AdSlot slotKey="header_banner" />
+
       {/* Top Hero Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Hero Article */}
@@ -48,6 +52,9 @@ export default function HomePage() {
         <aside className="lg:col-span-4 space-y-6">
           {/* Live Gold & Currency Widget */}
           <LiveRatesWidget dailyRates={dailyRates} currencies={currencies} />
+
+          {/* Sidebar MPU Ad Banner */}
+          <AdSlot slotKey="sidebar_banner" />
 
           {/* Trending Stories */}
           <div className="bg-surface border border-border rounded-lg p-5 shadow-card">
@@ -169,6 +176,12 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Footer Leaderboard Banner */}
+      <AdSlot slotKey="footer_banner" />
+
+      {/* Sticky Mobile Bottom Anchor Ad */}
+      <AdSlot slotKey="sticky_mobile" />
     </div>
   );
 }

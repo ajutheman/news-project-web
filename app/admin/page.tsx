@@ -11,8 +11,11 @@ export default function AdminDashboardPage() {
     { label: 'പ്രസിദ്ധീകരിച്ചവ (Published)', value: stats.publishedArticles, icon: '✅', color: 'text-success' },
     { label: 'ഡ്രാഫ്റ്റുകൾ (Drafts)', value: stats.draftArticles, icon: '📝', color: 'text-warning' },
     { label: 'പ്രീമിയം സ്റ്റോറികൾ (Premium)', value: stats.premiumArticles, icon: '👑', color: 'text-premium' },
-    { label: 'വാർത്താ വിഭാഗങ്ങൾ (Categories)', value: stats.categoriesCount, icon: '🗂️', color: 'text-text' },
-    { label: 'ആകെ വായനകൾ (Total Views)', value: stats.totalViews.toLocaleString('en-IN'), icon: '👁️', color: 'text-accent' },
+    { label: 'ബിസിനസ്സുകൾ (Directory)', value: stats.businessesCount || 0, icon: '💼', color: 'text-accent' },
+    { label: 'സജീവ ജോലികൾ (Jobs)', value: stats.activeJobsCount || 0, icon: '👔', color: 'text-accent' },
+    { label: 'പരസ്യ സ്ലോട്ടുകൾ (Active Ads)', value: stats.activeAdsCount || 0, icon: '💰', color: 'text-success' },
+    { label: 'പരസ്യ ഇംപ്രഷൻസ് (Impressions)', value: (stats.totalAdImpressions || 0).toLocaleString('en-IN'), icon: '👁️', color: 'text-text-muted' },
+    { label: 'പരസ്യ ക്ലിക്കുകൾ (Ad Clicks)', value: (stats.totalAdClicks || 0).toLocaleString('en-IN'), icon: '🖱️', color: 'text-accent' },
   ];
 
   return (
@@ -35,7 +38,7 @@ export default function AdminDashboardPage() {
       {/* Quick Actions Strip */}
       <div className="bg-surface border border-border rounded-xl p-5 shadow-card">
         <h2 className="text-sm font-bold font-reading text-text mb-3">
-          എഡിറ്റോറിയൽ കുറുക്കുവഴികൾ (Quick Actions)
+          എഡിറ്റോറിയൽ &amp; റവന്യൂ കുറുക്കുവഴികൾ (Quick Actions)
         </h2>
         <div className="flex flex-wrap gap-2 text-xs font-semibold">
           <Link
@@ -46,32 +49,46 @@ export default function AdminDashboardPage() {
             <span>പുതിയ വാർത്ത എഴുതുക</span>
           </Link>
           <Link
-            href="/admin/categories"
+            href="/admin/ads"
             className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
           >
-            <span>🗂️</span>
-            <span>വിഭാഗങ്ങൾ ചേർക്കുക / മാറ്റുക</span>
+            <span>💰</span>
+            <span>പരസ്യങ്ങളും AdSense ഉം</span>
           </Link>
           <Link
-            href="/admin/rates"
+            href="/admin/directory"
             className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
           >
-            <span>🟡</span>
-            <span>ഇന്നത്തെ സ്വർണവില അപ്ഡേറ്റ് ചെയ്യുക</span>
+            <span>💼</span>
+            <span>ഡയറക്ടറി മാനേജ് ചെയ്യുക</span>
           </Link>
           <Link
-            href="/admin/featured"
+            href="/admin/jobs"
             className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
           >
-            <span>📌</span>
-            <span>ഹോം പേജ് ഹീറോ സ്റ്റോറി മാറ്റുക</span>
+            <span>👔</span>
+            <span>ജോബ് ലിസ്റ്റിംഗുകൾ</span>
           </Link>
           <Link
-            href="/admin/comments"
+            href="/admin/events"
             className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
           >
-            <span>💬</span>
-            <span>കമന്റുകൾ മോഡറേറ്റ് ചെയ്യുക</span>
+            <span>🎟️</span>
+            <span>ഇവന്റുകൾ &amp; അവാർഡുകൾ</span>
+          </Link>
+          <Link
+            href="/admin/users"
+            className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
+          >
+            <span>👥</span>
+            <span>സ്റ്റാഫ് അനുമതികൾ (Permissions)</span>
+          </Link>
+          <Link
+            href="/admin/settings"
+            className="bg-surface-raised border border-border text-text px-3.5 py-2 rounded-lg hover:bg-border flex items-center gap-1.5"
+          >
+            <span>⚙️</span>
+            <span>സൈറ്റ് സെറ്റിംഗ്സ്</span>
           </Link>
         </div>
       </div>

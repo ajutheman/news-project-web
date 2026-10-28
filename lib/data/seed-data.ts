@@ -1,4 +1,23 @@
-import { Category, Author, Article, DailyRate, CurrencyRate, Plan, HomeSlot, District, Video } from '../types';
+import {
+  Category,
+  Author,
+  Article,
+  DailyRate,
+  CurrencyRate,
+  Plan,
+  HomeSlot,
+  District,
+  Video,
+  AdSlotConfig,
+  AdSenseSettings,
+  BusinessListing,
+  JobListing,
+  NewsEvent,
+  ClassifiedAd,
+  ResearchReport,
+  StaffUser,
+  SiteSettings
+} from '../types';
 
 export const SEED_CATEGORIES: Category[] = [
   // 20 Top-level categories
@@ -437,3 +456,438 @@ export const SEED_VIDEOS: Video[] = [
     created_at: '2026-10-27T15:00:00Z'
   }
 ];
+
+// ================= ADVERTISING SEED DATA =================
+export const SEED_ADSENSE: AdSenseSettings = {
+  publisher_id: 'ca-pub-9847123984712345',
+  enable_auto_ads: true,
+  enable_display_ads: true,
+  enable_admob: true
+};
+
+export const SEED_AD_SLOTS: AdSlotConfig[] = [
+  {
+    slot_key: 'header_banner',
+    name: 'ടോപ്പ് ലീഡർബോർഡ് (Header Leaderboard)',
+    size: '728x90',
+    is_active: true,
+    ad_type: 'direct',
+    direct_title: 'മുത്തൂറ്റ് ഫിനാൻസ് സ്വർണവായ്പ - 0% പ്രോസസ്സിംഗ് ഫീസ്',
+    direct_image_url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=728&h=90&q=80',
+    direct_link_url: 'https://www.muthootfinance.com',
+    direct_sponsor_name: 'Muthoot Finance',
+    impressions: 12400,
+    clicks: 340
+  },
+  {
+    slot_key: 'sidebar_banner',
+    name: 'റൈറ്റ് സൈഡ്‌ബാർ സ്ക്വയർ (Sidebar MPU)',
+    size: '300x250',
+    is_active: true,
+    ad_type: 'direct',
+    direct_title: 'ജോയ് ആലുക്കാസ് വെഡ്ഡിങ് ജ്വല്ലറി ഫെസ്റ്റ്',
+    direct_image_url: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=300&h=250&q=80',
+    direct_link_url: 'https://www.joyalukkas.com',
+    direct_sponsor_name: 'Joyalukkas',
+    impressions: 8900,
+    clicks: 215
+  },
+  {
+    slot_key: 'article_middle',
+    name: 'ലേഖനത്തിനിടയിലെ പരസ്യം (In-Article Responsive)',
+    size: '728x90',
+    is_active: true,
+    ad_type: 'adsense',
+    adsense_slot_id: 'in_article_slot_902',
+    direct_title: 'ഫെഡറൽ ബാങ്ക് സ്മാർട്ട് സേവിംഗ്സ് അക്കൗണ്ട്',
+    direct_image_url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=728&h=90&q=80',
+    direct_link_url: 'https://www.federalbank.co.in',
+    direct_sponsor_name: 'Federal Bank',
+    impressions: 15600,
+    clicks: 410
+  },
+  {
+    slot_key: 'footer_banner',
+    name: 'ബോട്ടം ഫൂട്ടർ ബാനർ (Footer Leaderboard)',
+    size: '728x90',
+    is_active: true,
+    ad_type: 'direct',
+    direct_title: 'ലക്സസ് കൊച്ചി ഓട്ടോ എക്സ്പോ 2026',
+    direct_image_url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=728&h=90&q=80',
+    direct_link_url: 'https://lexusindia.co.in',
+    direct_sponsor_name: 'Lexus Kochi',
+    impressions: 5400,
+    clicks: 120
+  },
+  {
+    slot_key: 'sticky_mobile',
+    name: 'മൊബൈൽ സ്റ്റിക്കി ആങ്കർ (Mobile Anchor)',
+    size: '320x50',
+    is_active: true,
+    ad_type: 'affiliate',
+    direct_title: 'The Profit Premium: ₹99/മാസം - പരസ്യങ്ങളില്ലാത്ത വായന',
+    direct_link_url: '/membership',
+    direct_sponsor_name: 'The Profit Exclusive',
+    impressions: 19800,
+    clicks: 650
+  }
+];
+
+// ================= BUSINESS DIRECTORY SEED DATA =================
+export const SEED_BUSINESSES: BusinessListing[] = [
+  {
+    id: 'biz-1',
+    name_ml: 'കല്യാൺ ജൂവലേഴ്സ് ഹെഡ് ഓഫീസ്',
+    name_en: 'Kalyan Jewellers Corporate',
+    category: 'സ്വർണം & ആഭരണം (Jewelry)',
+    district: 'thrissur',
+    city: 'തൃശ്ശൂർ (Thrissur)',
+    description: 'ഇന്ത്യയിലെയും മിഡിൽ ഈസ്റ്റിലെയും പ്രമുഖ ജ്വല്ലറി ശൃംഖല. ബിഐഎസ് 916 ഹോൾമാർക്ക്ഡ് സ്വർണം, വജ്രം, അൺകട്ട് ജ്വല്ലറി.',
+    phone: '+91 487 2434300',
+    whatsapp: '+919847000001',
+    email: 'customercare@kalyanjewellers.net',
+    website: 'https://www.kalyanjewellers.net',
+    address: 'റൗണ്ട് നോർത്ത്, തൃശ്ശൂർ, കേരളം - 680001',
+    logo_url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=200&h=200&q=80',
+    tier: 'platinum',
+    is_verified: true,
+    views: 4320,
+    created_at: '2026-10-01T10:00:00Z'
+  },
+  {
+    id: 'biz-2',
+    name_ml: 'ക്ലൗഡ് സെർവർ ടെക്നോളജീസ് എൽഎൽപി',
+    name_en: 'CloudServer Technologies LLP',
+    category: 'ഐടി & സോഫ്റ്റ്‌വെയർ (IT & Software)',
+    district: 'ernakulam',
+    city: 'കൊച്ചി (Kochi)',
+    description: 'എന്റർപ്രൈസ് ക്ലൗഡ് സൊല്യൂഷൻസ്, എഐ ആപ്ലിക്കേഷനുകൾ, ഫിൻടെക് പ്ലാറ്റ്‌ഫോം ഡെവലപ്‌മെന്റ്.',
+    phone: '+91 484 4055678',
+    whatsapp: '+919847000002',
+    email: 'info@cloudservertech.in',
+    website: 'https://cloudservertech.in',
+    address: 'ജ്യോതിർമയ ബിൽഡിംഗ്, ഇൻഫോപാർക്ക് ഫേസ് 2, കാക്കനാട്, കൊച്ചി - 682042',
+    logo_url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=200&h=200&q=80',
+    tier: 'gold',
+    is_verified: true,
+    views: 2850,
+    created_at: '2026-10-05T12:00:00Z'
+  },
+  {
+    id: 'biz-3',
+    name_ml: 'ലുലു ഇന്റർനാഷണൽ ഗ്രൂപ്പ്',
+    name_en: 'Lulu International Group',
+    category: 'റീട്ടെയിൽ & മാൾ (Retail & Shopping)',
+    district: 'ernakulam',
+    city: 'ഇടപ്പള്ളി, കൊച്ചി',
+    description: 'ഏഷ്യയിലെ ഏറ്റവും വലിയ ഹൈപ്പർമാർക്കറ്റ് ശൃംഖല, ലോജിസ്റ്റിക്സ് ഹബ്, ആഗോള കയറ്റുമതി കേന്ദ്രം.',
+    phone: '+91 484 2727777',
+    whatsapp: '+919847000003',
+    website: 'https://www.lulugroupinternational.com',
+    address: '34/1000, എൻഎച്ച് 47, ഇടപ്പള്ളി, കൊച്ചി - 682024',
+    logo_url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=200&h=200&q=80',
+    tier: 'platinum',
+    is_verified: true,
+    views: 6720,
+    created_at: '2026-10-10T09:00:00Z'
+  },
+  {
+    id: 'biz-4',
+    name_ml: 'മലബാർ എക്സ്പോർട്ട്സ് & സ്പൈസസ്',
+    name_en: 'Malabar Exports & Spices Ltd',
+    category: 'കാർഷികം & കയറ്റുമതി (Agri Export)',
+    district: 'kozhikode',
+    city: 'കോഴിക്കോട് (Kozhikode)',
+    description: 'വയനാടൻ കുരുമുളക്, ഏലം, ജാതിക്ക എന്നിവയുടെ രാജ്യാന്തര കയറ്റുമതിയും ഓർഗാനിക് പ്രോസസ്സിംഗും.',
+    phone: '+91 495 2367890',
+    whatsapp: '+919847000004',
+    email: 'export@malabarspices.com',
+    website: 'https://malabarspices.com',
+    address: 'സ്പൈസ് വേൾഡ്, ബീച്ച് റോഡ്, കോഴിക്കോട് - 673001',
+    logo_url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=200&h=200&q=80',
+    tier: 'featured',
+    is_verified: true,
+    views: 1940,
+    created_at: '2026-10-15T14:30:00Z'
+  }
+];
+
+// ================= JOBS & RECRUITMENT SEED DATA =================
+export const SEED_JOBS: JobListing[] = [
+  {
+    id: 'job-1',
+    title: 'സീനിയർ ഫുൾസ്റ്റാക്ക് ഡെവലപ്പർ (Next.js & TypeScript)',
+    company_name: 'ഇൻഫോപാർക്ക് ടെക് ലാബ്സ്',
+    company_logo: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=100&h=100&q=80',
+    location: 'കാക്കനാട്, കൊച്ചി (Kochi)',
+    region: 'kerala',
+    job_type: 'Full-time',
+    salary_range: '₹12 - ₹18 ലക്ഷം / വർഷം',
+    experience: '3-6 വർഷം',
+    description: 'പ്രമുഖ യുഎസ് ക്ലയന്റുകൾക്കായി ക്ലൗഡ് സ്കെയിൽ വെബ് ആപ്ലിക്കേഷനുകൾ നിർമ്മിക്കാൻ പരിചയസമ്പന്നരായ എഞ്ചിനീയർമാരെ ക്ഷണിക്കുന്നു.',
+    apply_url_or_email: 'careers@infoparktechlabs.com',
+    is_featured: true,
+    created_at: '2026-10-25T11:00:00Z'
+  },
+  {
+    id: 'job-2',
+    title: 'ഫിനാൻഷ്യൽ അനലിസ്റ്റ് (NRI ഇൻവെസ്റ്റ്മെന്റ് ഡെസ്ക്)',
+    company_name: 'ദുബായ് വെൽത്ത് മാനേജ്‌മെന്റ് ഗ്രൂപ്പ്',
+    company_logo: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=100&h=100&q=80',
+    location: 'ഡൗൺടൗൺ, ദുബായ്, യുഎഇ',
+    region: 'gulf',
+    job_type: 'Full-time',
+    salary_range: 'AED 14,000 - 20,000 / മാസം + വിസ',
+    experience: '4+ വർഷം',
+    description: 'ഗൾഫ് മലയാളികളുടെ പോർട്ട്‌ഫോളിയോ നിക്ഷേപങ്ങൾ കൈകാര്യം ചെയ്യാനും റിയൽ എസ്റ്റേറ്റ് ഫണ്ട് അനാലിസിസിനും അവസരം.',
+    apply_url_or_email: 'jobs@dubaiwealth.ae',
+    is_featured: true,
+    created_at: '2026-10-26T09:30:00Z'
+  },
+  {
+    id: 'job-3',
+    title: 'ചീഫ് അക്കൗണ്ടന്റ് (CA / CMA യോഗ്യതയുള്ളവർക്ക്)',
+    company_name: 'പോപ്പുലർ ട്രേഡിംഗ് കോർപ്പറേഷൻ',
+    company_logo: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=100&h=100&q=80',
+    location: 'പാലാരിവട്ടം, എറണാകുളം',
+    region: 'kerala',
+    job_type: 'Full-time',
+    salary_range: '₹60,000 - ₹85,000 / മാസം',
+    experience: '5+ വർഷം',
+    description: 'ജിഎസ്ടി ഫയലിംഗ്, ഓഡിറ്റിംഗ്, മാനേജ്‌മെന്റ് അക്കൗണ്ടിംഗ് എന്നിവയിൽ പ്രാവീണ്യമുള്ളവരെ ആവശ്യമുണ്ട്.',
+    apply_url_or_email: 'hr@populartrading.in',
+    is_featured: false,
+    created_at: '2026-10-27T08:00:00Z'
+  },
+  {
+    id: 'job-4',
+    title: 'ബിസിനസ്സ് ഡെവലപ്‌മെന്റ് മാനേജർ (റീട്ടെയിൽ & എഫ്എംസിജി)',
+    company_name: 'അൽ മദീന ഗ്രൂപ്പ് സൗദി അറേബ്യ',
+    company_logo: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=100&h=100&q=80',
+    location: 'റിയാദ്, സൗദി അറേബ്യ',
+    region: 'gulf',
+    job_type: 'Full-time',
+    salary_range: 'SAR 9,000 - 13,000 / മാസം',
+    experience: '3-5 വർഷം',
+    description: 'സൗദി അറേബ്യയിലെ സൂപ്പർമാർക്കറ്റ് ശൃംഖലയുടെ വിപുലീകരണത്തിനായി പ്രൊഫഷണലുകളെ ക്ഷണിക്കുന്നു.',
+    apply_url_or_email: 'recruitment@almadeenahksa.com',
+    is_featured: true,
+    created_at: '2026-10-28T05:00:00Z'
+  }
+];
+
+// ================= EVENTS & CONFERENCES SEED DATA =================
+export const SEED_EVENTS: NewsEvent[] = [
+  {
+    id: 'event-1',
+    title: 'കേരള ബിസിനസ് കോൺക്ലേവ് & ഗ്ലോബൽ ഇൻവെസ്റ്റേഴ്സ് മീറ്റ് 2026',
+    subtitle: 'വിഴിഞ്ഞം തുറമുഖവും കൊച്ചി മെട്രോയും തുറക്കുന്ന പുതിയ നിക്ഷേപ സാധ്യതകൾ',
+    event_type: 'conference',
+    date_string: '2026 നവംബർ 15, രാവിലെ 9:30',
+    location_or_platform: 'ലെ മെറിഡിയൻ കൺവെൻഷൻ സെന്റർ, കൊച്ചി',
+    ticket_price_inr: 1500,
+    ticket_link: 'https://keralaconclave.com/register',
+    image_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+    description: 'കേരളത്തിലെയും ഗൾഫിലെയും പ്രമുഖ വ്യവസായികൾ, സ്റ്റാർട്ടപ്പ് സ്ഥാപകർ, ധനകാര്യ വിദഗ്ദ്ധർ പങ്കെടുക്കുന്ന വാർഷിക ഉച്ചകോടി.',
+    sponsor_names: ['Federal Bank', 'KSIDC', 'Kalyan Jewellers', 'TiE Kerala'],
+    is_featured: true,
+    created_at: '2026-10-18T10:00:00Z'
+  },
+  {
+    id: 'event-2',
+    title: 'ദ പ്രോഫിറ്റ് ടസ്കർ ബിസിനസ് എക്സലൻസ് അവാർഡുകൾ 2026',
+    subtitle: 'കേരളത്തിലെ മികച്ച സംരംഭകരെയും ഇന്നൊവേഷനുകളെയും ആദരിക്കുന്നു',
+    event_type: 'awards',
+    date_string: '2026 ഡിസംബർ 05, വൈകിട്ട് 6:00',
+    location_or_platform: 'ഹയാത്ത് റീജൻസി, തിരുവനന്തപുരം',
+    ticket_price_inr: 2500,
+    ticket_link: 'https://theprofit.in/awards/nominate',
+    image_url: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
+    description: 'സ്റ്റാർട്ടപ്പ് ഓഫ് ദി ഇയർ, വനിതാ സംരംഭക, എക്സ്പോർട്ടർ ഓഫ് ദി ഇയർ അടക്കം 12 കാറ്റഗറികളിൽ അവാർഡുകൾ വിതരണം ചെയ്യുന്നു.',
+    sponsor_names: ['Kerala Startup Mission', 'Muthoot Blue', 'Joyalukkas'],
+    is_featured: true,
+    created_at: '2026-10-20T12:00:00Z'
+  },
+  {
+    id: 'event-3',
+    title: 'ഓൺലൈൻ വെബിനാർ: സ്വർണ നിക്ഷേപവും SIP തന്ത്രങ്ങളും 2026-ൽ',
+    subtitle: 'സാധാരണക്കാർക്കും പ്രവാസികൾക്കും ഒരുപോലെ പ്രയോജനപ്പെടുന്ന സമ്പാദ്യ പാഠങ്ങൾ',
+    event_type: 'webinar',
+    date_string: '2026 നവംബർ 08, ഞായർ വൈകിട്ട് 7:30',
+    location_or_platform: 'സൂം ഓൺലൈൻ വെബിനാർ (Zoom Live)',
+    ticket_price_inr: 0,
+    ticket_link: 'https://zoom.us/webinar/register/theprofit-sip',
+    image_url: 'https://images.unsplash.com/photo-1591696205602-2f950c417cb9?auto=format&fit=crop&w=1200&q=80',
+    description: 'പ്രമുഖ സാമ്പത്തിക വിദഗ്ദ്ധ പ്രിയ നായർ നയിക്കുന്ന 90 മിനിറ്റ് സൗജന്യ ഇന്ററാക്ടീവ് വെബിനാർ.',
+    sponsor_names: ['The Profit Wealth Desk'],
+    is_featured: false,
+    created_at: '2026-10-22T08:00:00Z'
+  }
+];
+
+// ================= CLASSIFIEDS SEED DATA =================
+export const SEED_CLASSIFIEDS: ClassifiedAd[] = [
+  {
+    id: 'clf-1',
+    title: 'എം.ജി റോഡ് എറണാകുളത്ത് 2,400 ചതുരശ്ര അടി പ്രൈം കൊമേഴ്സ്യൽ ഓഫീസ് സ്പേസ് വാടകയ്ക്ക്',
+    category: 'commercial',
+    district: 'ernakulam',
+    price_inr: 120000,
+    description: 'ലിഫ്റ്റ്, കാർ പാർക്കിംഗ്, 100% പവർ ബാക്കപ്പ് സൗകര്യങ്ങളോടെ ബാങ്കുകൾക്കോ കോർപ്പറേറ്റ് ഓഫീസുകൾക്കോ അനുയോജ്യം.',
+    contact_name: 'തോമസ് മാത്യു',
+    contact_phone: '+91 9447012345',
+    contact_whatsapp: '+919447012345',
+    image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80',
+    is_approved: true,
+    created_at: '2026-10-24T10:00:00Z'
+  },
+  {
+    id: 'clf-2',
+    title: 'കോഴിക്കോട് ബീച്ച് റോഡിൽ പ്രവർത്തനസജ്ജമായ പ്രീമിയം റെസ്റ്റോറന്റ് വിൽപനയ്ക്ക്',
+    category: 'business_sale',
+    district: 'kozhikode',
+    price_inr: 3500000,
+    description: 'എല്ലാ ലൈസൻസുകളും മോഡേൺ കിച്ചൺ എക്യുപ്‌മെന്റുകളും ഉള്ള ഫാമിലി റെസ്റ്റോറന്റ്. മികച്ച കസ്റ്റമർ ബേസ് ഉണ്ട്.',
+    contact_name: 'റഫീഖ് അഹമ്മദ്',
+    contact_phone: '+91 9846054321',
+    contact_whatsapp: '+919846054321',
+    image_url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80',
+    is_approved: true,
+    created_at: '2026-10-26T15:00:00Z'
+  },
+  {
+    id: 'clf-3',
+    title: 'ടെക്നോപാർക്ക് തിരുവനന്തപുരത്തിന് സമീപം 4 BHK ലക്ഷ്വറി വില്ല വിൽപനയ്ക്ക്',
+    category: 'real_estate',
+    district: 'thiruvananthapuram',
+    price_inr: 18500000,
+    description: '7 സെന്റിൽ 3200 ചതുരശ്ര അടി വിസ്തീർണം. ഗേറ്റഡ് കമ്മ്യൂണിറ്റി, ക്ലബ്ബ് ഹൗസ്, നീന്തൽക്കുളം സൗകര്യങ്ങൾ.',
+    contact_name: 'സുരേഷ് കുമാർ',
+    contact_phone: '+91 9895098765',
+    contact_whatsapp: '+919895098765',
+    image_url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80',
+    is_approved: true,
+    created_at: '2026-10-27T11:20:00Z'
+  }
+];
+
+// ================= RESEARCH REPORTS SEED DATA =================
+export const SEED_REPORTS: ResearchReport[] = [
+  {
+    id: 'rep-1',
+    title: 'കേരള ഇക്കണോമിക് & സ്റ്റാർട്ടപ്പ് സർവേ 2026 (The Kerala Startup Outlook)',
+    category: 'സ്റ്റാർട്ടപ്പ് & ഇക്കണോമിക്സ്',
+    pages_count: 58,
+    format: 'PDF',
+    price_inr: 499,
+    is_premium: true,
+    cover_image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80',
+    summary: 'കേരളത്തിലെ 500+ സ്റ്റാർട്ടപ്പുകളുടെ വരുമാനം, വിദേശ നിക്ഷേപങ്ങൾ, തൊഴിലവസരങ്ങൾ എന്നിവയെക്കുറിച്ചുള്ള സമഗ്രമായ ഗവേഷണ റിപ്പോർട്ട്.',
+    download_url: '/reports/kerala-startup-survey-2026.pdf',
+    downloads_count: 840,
+    published_at: '2026-10-15T09:00:00Z'
+  },
+  {
+    id: 'rep-2',
+    title: 'ഗൾഫ് മലയാളികളുടെ പണമയക്കലും രൂപയുടെ ഭാവി വിപണിയും 2026-27',
+    category: 'NRI ധനകാര്യം',
+    pages_count: 42,
+    format: 'PDF',
+    price_inr: 0,
+    is_premium: false,
+    cover_image_url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80',
+    summary: 'ജിസിസി രാജ്യങ്ങളിൽ നിന്നുള്ള പണമയക്കൽ പ്രവണതകൾ, ബാങ്ക് നിക്ഷേപ നിരക്കുകൾ, റിയൽ എസ്റ്റേറ്റ് നിക്ഷേപങ്ങളുടെ സമഗ്ര വിശകലനം.',
+    download_url: '/reports/gulf-remittance-outlook-2026.pdf',
+    downloads_count: 2150,
+    published_at: '2026-10-20T11:00:00Z'
+  }
+];
+
+// ================= STAFF USERS SEED DATA =================
+export const SEED_STAFF_USERS: StaffUser[] = [
+  {
+    id: 'user-admin',
+    email: 'admin@theprofit.in',
+    name: 'അഡ്മിനിസ്ട്രേറ്റർ (Super Admin)',
+    role: 'super_admin',
+    permissions: {
+      can_publish: true,
+      can_manage_ads: true,
+      can_manage_categories: true,
+      can_manage_users: true,
+      can_moderate_comments: true,
+      can_manage_business: true
+    },
+    last_login: '2026-10-28T12:00:00Z',
+    status: 'active',
+    created_at: '2026-01-01T00:00:00Z'
+  },
+  {
+    id: 'user-editor',
+    email: 'editor@theprofit.in',
+    name: 'കെ. വി. രാധാകൃഷ്ണൻ (Managing Editor)',
+    role: 'editor',
+    permissions: {
+      can_publish: true,
+      can_manage_ads: false,
+      can_manage_categories: true,
+      can_manage_users: false,
+      can_moderate_comments: true,
+      can_manage_business: true
+    },
+    last_login: '2026-10-28T11:15:00Z',
+    status: 'active',
+    created_at: '2026-02-15T00:00:00Z'
+  },
+  {
+    id: 'user-admanager',
+    email: 'ads@theprofit.in',
+    name: 'ഷെറിൻ ജോസഫ് (Ad Sales Head)',
+    role: 'ad_manager',
+    permissions: {
+      can_publish: false,
+      can_manage_ads: true,
+      can_manage_categories: false,
+      can_manage_users: false,
+      can_moderate_comments: false,
+      can_manage_business: true
+    },
+    last_login: '2026-10-28T09:45:00Z',
+    status: 'active',
+    created_at: '2026-03-01T00:00:00Z'
+  },
+  {
+    id: 'user-author',
+    email: 'reporter@theprofit.in',
+    name: 'അരുൺ കുമാർ (Special Correspondent)',
+    role: 'author',
+    permissions: {
+      can_publish: false,
+      can_manage_ads: false,
+      can_manage_categories: false,
+      can_manage_users: false,
+      can_moderate_comments: false,
+      can_manage_business: false
+    },
+    last_login: '2026-10-28T10:30:00Z',
+    status: 'active',
+    created_at: '2026-04-10T00:00:00Z'
+  }
+];
+
+// ================= SITE MASTER SETTINGS =================
+export const SEED_SITE_SETTINGS: SiteSettings = {
+  site_name_ml: 'ദ പ്രോഫിറ്റ്',
+  site_name_en: 'The Profit',
+  tagline_ml: 'കേരളത്തിലെയും ആഗോളതലത്തിലെയും ഏറ്റവും വിശ്വസനീയമായ മലയാളം ബിസിനസ്സ് & വാർത്താ പോർട്ടൽ',
+  default_edition: 'kerala',
+  adsense_publisher_id: 'ca-pub-9847123984712345',
+  enable_ads: true,
+  enable_donations: true,
+  breaking_alert_text: 'വിഴിഞ്ഞം തുറമുഖത്ത് ആദ്യ വാണിജ്യ കപ്പൽ എത്തി; വാണിജ്യ പ്രവർത്തനം ആരംഭിച്ചു',
+  whatsapp_channel_url: 'https://whatsapp.com/channel/theprofitnews',
+  telegram_channel_url: 'https://t.me/theprofitmalayalam',
+  contact_email: 'desk@theprofit.in',
+  contact_phone: '+91 484 2345678',
+  maintenance_mode: false
+};
