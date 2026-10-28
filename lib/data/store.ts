@@ -23,7 +23,7 @@ import {
   SEED_VIDEOS
 } from './seed-data';
 
-// Server-side in-memory state with persistence to fallback seed
+// Server-side in-memory state with persistence to local cache
 class NewsDataStore {
   private categories: Category[] = [...SEED_CATEGORIES];
   private authors: Author[] = [...SEED_AUTHORS];
@@ -52,6 +52,66 @@ class NewsDataStore {
       created_at: '2026-10-28T09:40:00Z'
     }
   ];
+
+  constructor() {
+    this.loadFromDisk();
+  }
+
+  private loadFromDisk() {
+    try {
+      if (typeof window === 'undefined') {
+        // Node.js environment
+        const fs = require('fs');
+        const path = require('path');
+        const cachePath = path.join(process.cwd(), '.data-cache.json');
+        if (fs.existsSync(cachePath)) {
+          const raw = fs.readFileSync(cachePath, 'utf8');
+          const data = JSON.parse(raw);
+          if (Array.isArray(data.articles) && data.articles.length > 0) {
+            this.articles = data.articles;
+          }
+          if (Array.isArray(data.categories) && data.categories.length > 0) {
+            this.categories = data.categories;
+          }
+          if (Array.isArray(data.homeSlots) && data.homeSlots.length > 0) {
+            this.homeSlots = data.homeSlots;
+          }
+          if (Array.isArray(data.dailyRates) && data.dailyRates.length > 0) {
+            this.dailyRates = data.dailyRates;
+          }
+          if (Array.isArray(data.comments) && data.comments.length > 0) {
+            this.comments = data.comments;
+          }
+          if (Array.isArray(data.videos) && data.videos.length > 0) {
+            this.videos = data.videos;
+          }
+        }
+      }
+    } catch {
+      // fallback to seed
+    }
+  }
+
+  private saveToDisk() {
+    try {
+      if (typeof window === 'undefined') {
+        const fs = require('fs');
+        const path = require('path');
+        const cachePath = path.join(process.cwd(), '.data-cache.json');
+        const data = {
+          articles: this.articles,
+          categories: this.categories,
+          homeSlots: this.homeSlots,
+          dailyRates: this.dailyRates,
+          comments: this.comments,
+          videos: this.videos
+        };
+        fs.writeFileSync(cachePath, JSON.stringify(data, null, 2), 'utf8');
+      }
+    } catch {
+      // non-fatal
+    }
+  }
 
   // ================= CATEGORIES =================
   getCategories(): Category[] {
@@ -89,6 +149,7 @@ class NewsDataStore {
         ...this.categories[existingIndex],
         ...data,
       };
+      this.saveToDisk();
       return this.categories[existingIndex];
     } else {
       const newCategory: Category = {
@@ -102,6 +163,7 @@ class NewsDataStore {
         is_premium_section: data.is_premium_section ?? false,
       };
       this.categories.push(newCategory);
+      this.saveToDisk();
       return newCategory;
     }
   }
@@ -109,6 +171,7 @@ class NewsDataStore {
   deleteCategory(id: string): boolean {
     const initialLen = this.categories.length;
     this.categories = this.categories.filter(c => c.id !== id);
+    this.saveToDisk();
     return this.categories.length < initialLen;
   }
 
@@ -139,9 +202,9 @@ class NewsDataStore {
       author: this.authors.find(a => a.id === art.author_id)
     }));
 
-    if (options.status) {
+    if (options.status && options.status !== 'all') {
       list = list.filter(a => a.status === options.status);
-    } else {
+    } else if (!options.status) {
       // Default to published stories for reader views
       list = list.filter(a => a.status === 'published');
     }
@@ -211,10 +274,27 @@ class NewsDataStore {
     };
   }
 
+  getArticleById(id: string): Article | undefined {
+    const art = this.articles.find(a => a.id === id || a.slug === id);
+    if (!art) return undefined;
+    return {
+      ...art,
+      category: this.categories.find(c => c.id === art.category_id),
+      author: this.authors.find(a => a.id === art.author_id)
+    };
+  }
+
   getHeroArticle(): Article | undefined {
     const slot = this.homeSlots.find(s => s.slot_key === 'hero' && s.position === 0);
     if (slot) {
-      return this.getArticleBySlug(this.articles.find(a => a.id === slot.article_id)?.slug || '');
+      const art = this.articles.find(a => a.id === slot.article_id);
+      if (art && art.status === 'published') {
+        return {
+          ...art,
+          category: this.categories.find(c => c.id === art.category_id),
+          author: this.authors.find(a => a.id === art.author_id)
+        };
+      }
     }
     return this.getArticles({ limit: 1 }).articles[0];
   }
@@ -222,36 +302,51 @@ class NewsDataStore {
   getBreakingNews(): Article[] {
     const slots = this.homeSlots.filter(s => s.slot_key === 'breaking');
     if (slots.length > 0) {
-      return slots
-        .map(s => this.articles.find(a => a.id === s.article_id))
-        .filter((a): a is Article => Boolean(a));
+      const slotted = slots
+        .map(s => this.articles.find(a => a.id === s.article_id && a.status === 'published'))
+        .filter((a): a is Article => Boolean(a))
+        .map(a => ({
+          ...a,
+          category: this.categories.find(c => c.id === a.category_id),
+          author: this.authors.find(auth => auth.id === a.author_id)
+        }));
+      if (slotted.length > 0) return slotted;
     }
     return this.getArticles({ limit: 4 }).articles;
   }
 
-  saveArticle(data: Partial<Article> & { title: string; category_id: string; author_id: string }): Article {
+  saveArticle(data: Partial<Article> & {
+    title: string;
+    category_id: string;
+    author_id: string;
+    is_hero?: boolean;
+    is_breaking?: boolean;
+  }): Article {
     const now = new Date().toISOString();
     const existingIndex = data.id ? this.articles.findIndex(a => a.id === data.id) : -1;
 
     // Helper to generate slug from title or English keywords
     const slug = data.slug || `story-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
 
+    let saved: Article;
+
     if (existingIndex >= 0) {
-      const updated: Article = {
+      saved = {
         ...this.articles[existingIndex],
         ...data,
+        district: data.district !== undefined ? data.district : this.articles[existingIndex].district,
         updated_at: now
       };
-      this.articles[existingIndex] = updated;
-      return updated;
+      this.articles[existingIndex] = saved;
     } else {
-      const newArticle: Article = {
+      saved = {
         id: data.id || `art-${Date.now()}`,
         slug,
         title: data.title,
         excerpt: data.excerpt || '',
         category_id: data.category_id,
         author_id: data.author_id,
+        district: data.district || undefined,
         hero_image_url: data.hero_image_url || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80',
         hero_caption: data.hero_caption,
         hero_credit: data.hero_credit,
@@ -274,14 +369,31 @@ class NewsDataStore {
         created_at: now,
         updated_at: now
       };
-      this.articles.unshift(newArticle);
-      return newArticle;
+      this.articles.unshift(saved);
     }
+
+    // Auto-pin to Hero slot on homepage if requested
+    if (data.is_hero) {
+      this.updateHomeSlot('hero', 0, saved.id);
+    }
+
+    // Auto-pin to Breaking News ticker if requested
+    if (data.is_breaking) {
+      this.homeSlots = [
+        { id: `slot-${Date.now()}`, slot_key: 'breaking', position: 0, article_id: saved.id },
+        ...this.homeSlots.filter(s => !(s.slot_key === 'breaking' && s.article_id === saved.id))
+      ];
+    }
+
+    this.saveToDisk();
+    return saved;
   }
 
   deleteArticle(id: string): boolean {
     const len = this.articles.length;
-    this.articles = this.articles.filter(a => a.id !== id);
+    this.articles = this.articles.filter(a => a.id !== id && a.slug !== id);
+    this.homeSlots = this.homeSlots.filter(s => s.article_id !== id);
+    this.saveToDisk();
     return this.articles.length < len;
   }
 
@@ -297,6 +409,7 @@ class NewsDataStore {
     rate.amount_paise = amount_inr * 100;
     rate.change_inr = change_inr;
     rate.rate_date = new Date().toISOString().split('T')[0];
+    this.saveToDisk();
     return rate;
   }
 
@@ -314,14 +427,17 @@ class NewsDataStore {
 
   updateHomeSlot(slot_key: HomeSlot['slot_key'], position: number, article_id: string): HomeSlot {
     const existing = this.homeSlots.find(s => s.slot_key === slot_key && s.position === position);
+    let result: HomeSlot;
     if (existing) {
       existing.article_id = article_id;
-      return existing;
+      result = existing;
     } else {
       const newSlot: HomeSlot = { slot_key, position, article_id };
       this.homeSlots.push(newSlot);
-      return newSlot;
+      result = newSlot;
     }
+    this.saveToDisk();
+    return result;
   }
 
   // ================= COMMENTS & REACTIONS =================
@@ -343,6 +459,7 @@ class NewsDataStore {
       created_at: new Date().toISOString()
     };
     this.comments.unshift(comment);
+    this.saveToDisk();
     return comment;
   }
 
@@ -350,6 +467,7 @@ class NewsDataStore {
     const comment = this.comments.find(c => c.id === id);
     if (comment) {
       comment.status = status;
+      this.saveToDisk();
     }
     return comment;
   }
@@ -388,12 +506,12 @@ class NewsDataStore {
   saveVideo(videoData: Partial<Video> & { youtube_id: string; title: string }): Video {
     const existingIndex = this.videos.findIndex(v => v.id === videoData.id || v.youtube_id === videoData.youtube_id);
     const now = new Date().toISOString();
+    let saved: Video;
     if (existingIndex >= 0) {
-      const updated = { ...this.videos[existingIndex], ...videoData };
-      this.videos[existingIndex] = updated;
-      return updated;
+      saved = { ...this.videos[existingIndex], ...videoData };
+      this.videos[existingIndex] = saved;
     } else {
-      const newVideo: Video = {
+      saved = {
         id: videoData.id || `vid-${Date.now()}`,
         youtube_id: videoData.youtube_id,
         title: videoData.title,
@@ -405,9 +523,10 @@ class NewsDataStore {
         views: 0,
         created_at: now
       };
-      this.videos.unshift(newVideo);
-      return newVideo;
+      this.videos.unshift(saved);
     }
+    this.saveToDisk();
+    return saved;
   }
 
   // ================= ADMIN STATS =================
@@ -426,5 +545,9 @@ class NewsDataStore {
   }
 }
 
-// Global singleton instance
-export const newsStore = new NewsDataStore();
+// Global singleton instance preserved across Next.js module reloads and chunks
+const globalForNews = globalThis as unknown as { __newsStore__?: NewsDataStore };
+export const newsStore = globalForNews.__newsStore__ ?? new NewsDataStore();
+if (!globalForNews.__newsStore__) {
+  globalForNews.__newsStore__ = newsStore;
+}

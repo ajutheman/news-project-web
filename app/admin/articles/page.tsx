@@ -14,8 +14,7 @@ export default function AdminArticlesListPage() {
 
   const fetchArticles = () => {
     setLoading(true);
-    let url = `/api/v1/articles?limit=100`;
-    if (statusFilter) url += `&status=${statusFilter}`;
+    let url = `/api/v1/articles?limit=100&status=${statusFilter || 'all'}`;
     if (categoryFilter) url += `&category=${categoryFilter}`;
     if (search) url += `&search=${encodeURIComponent(search)}`;
 
@@ -40,6 +39,22 @@ export default function AdminArticlesListPage() {
   useEffect(() => {
     fetchArticles();
   }, [statusFilter, categoryFilter]);
+
+  const handlePinHero = async (articleId: string, title: string) => {
+    try {
+      const res = await fetch('/api/v1/home-slots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot_key: 'hero', position: 0, article_id: articleId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`"${title.slice(0, 30)}..." വിജയകരമായി ഹോം പേജിലെ പ്രധാന വാർത്തയായി (Hero Story) മാറ്റി!`);
+      }
+    } catch {
+      alert('ഹീറോ സ്ലോട്ട് മാറ്റുന്നതിൽ പിഴവ് സംഭവിച്ചു.');
+    }
+  };
 
   const handleDelete = async (slug: string) => {
     if (!confirm('ഈ ലേഖനം പൂർണ്ണമായി നീക്കം ചെയ്യണമെന്ന് ഉറപ്പാണോ?')) return;
@@ -157,7 +172,12 @@ export default function AdminArticlesListPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-text-muted">
-                      {art.category?.name_ml || '-'}
+                      <div>{art.category?.name_ml || '-'}</div>
+                      {art.district && (
+                        <span className="inline-block mt-0.5 text-[9px] bg-accent/10 text-accent font-semibold px-1.5 py-0.5 rounded">
+                          📍 {art.district}
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-4 text-text-muted text-[11px] whitespace-nowrap">
                       {new Date(art.published_at).toLocaleDateString('ml-IN', {
@@ -184,22 +204,32 @@ export default function AdminArticlesListPage() {
                       )}
                     </td>
                     <td className="py-3 px-4 text-right whitespace-nowrap space-x-2">
+                      {art.status === 'published' && (
+                        <button
+                          type="button"
+                          onClick={() => handlePinHero(art.id, art.title)}
+                          title="ഹോം പേജിലെ പ്രധാന വാർത്തയാക്കുക"
+                          className="bg-accent/10 text-accent hover:bg-accent hover:text-white px-2 py-0.5 rounded text-[10px] font-bold transition-colors inline-block"
+                        >
+                          📌 Hero
+                        </button>
+                      )}
                       <Link
                         href={`/article/${art.slug}`}
-                        className="text-text-muted hover:text-text font-semibold"
+                        className="text-text-muted hover:text-text font-semibold inline-block"
                         target="_blank"
                       >
                         കാണുക
                       </Link>
                       <Link
                         href={`/admin/articles/${art.id}/edit`}
-                        className="text-accent hover:underline font-bold"
+                        className="text-accent hover:underline font-bold inline-block"
                       >
                         എഡിറ്റ്
                       </Link>
                       <button
                         onClick={() => handleDelete(art.slug)}
-                        className="text-danger hover:underline font-semibold"
+                        className="text-danger hover:underline font-semibold inline-block"
                       >
                         നീക്കുക
                       </button>

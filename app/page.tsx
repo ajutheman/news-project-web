@@ -8,6 +8,8 @@ import { HomeTabbedSections } from '@/components/HomeTabbedSections';
 import { VideoShortsStrip } from '@/components/VideoShortsStrip';
 import { KeralaDistrictSelector } from '@/components/KeralaDistrictSelector';
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   const heroArticle = newsStore.getHeroArticle();
   const breakingNews = newsStore.getBreakingNews();

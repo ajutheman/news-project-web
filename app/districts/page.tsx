@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'കേരളത്തിലെ 14 ജില്ലകളിലെയും പ്രാദേശിക വികസനം, കൃഷി, വ്യാപാരം, വ്യവസായ വാർത്തകൾ.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default function DistrictsHubPage() {
   const districts = newsStore.getDistricts();
   const { articles } = newsStore.getArticles({ limit: 6 });

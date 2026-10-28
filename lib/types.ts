@@ -127,6 +127,7 @@ export interface Reaction {
 }
 
 export interface HomeSlot {
+  id?: string;
   slot_key: 'hero' | 'breaking' | 'top_markets' | 'brand_connect';
   position: number;
   article_id: string;

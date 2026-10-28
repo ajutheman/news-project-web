@@ -25,6 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function TopicPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { page } = await searchParams;

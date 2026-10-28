@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: 'കേരളം, ബിസിനസ്, ഓഹരി വിപണി, കായികം, വിനോദം, സാങ്കേതികം അടക്കം 37 വാർത്താ വിഭാഗങ്ങൾ.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default function SectionsPage() {
   const categoryTree = newsStore.getCategories();
   const { articles } = newsStore.getArticles({ limit: 100 });

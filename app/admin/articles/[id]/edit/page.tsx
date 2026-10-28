@@ -7,10 +7,11 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function EditArticlePage({ params }: Props) {
   const { id } = await params;
-  const articles = newsStore.getArticles({ limit: 100 }).articles;
-  const article = articles.find(a => a.id === id || a.slug === id);
+  const article = newsStore.getArticleById(id);
 
   if (!article) {
     notFound();
