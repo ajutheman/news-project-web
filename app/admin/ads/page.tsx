@@ -3,6 +3,62 @@
 import React, { useState, useEffect } from 'react';
 import { AdSlotConfig, AdSenseSettings, AdSlotKey } from '@/lib/types';
 
+const SLOT_LABELS: Record<AdSlotKey, { name: string; desc: string; size: string }> = {
+  header_banner: {
+    name: 'ഹെഡർ ലീഡർബോർഡ് (Header Banner)',
+    desc: 'ഹോം പേജിന്റെ മുകൾഭാഗത്ത് ലോഗോയ്ക്കും പ്രധാന വാർത്തകൾക്കും താഴെ പ്രദർശിപ്പിക്കുന്നു.',
+    size: '728 × 90 px',
+  },
+  sidebar_banner: {
+    name: 'സൈഡ്ബാർ എം.പി.യു (Sidebar MPU)',
+    desc: 'വാർത്തകളുടെയും ഹോം പേജിന്റെയും വലതുവശത്ത് നിരക്കുകൾക്ക് താഴെ പ്രദർശിപ്പിക്കുന്നു.',
+    size: '300 × 250 px',
+  },
+  article_middle: {
+    name: 'ലേഖനത്തിനിടയിലെ പരസ്യം (In-Article)',
+    desc: 'വായനക്കാർ ലേഖനം വായിക്കുമ്പോൾ 3-ാം പാരഗ്രാഫിനു ശേഷം സ്വാഭാവികമായി ദൃശ്യമാകുന്നു.',
+    size: 'റെസ്പോൺസീവ് (Responsive)',
+  },
+  footer_banner: {
+    name: 'ഫൂട്ടർ ലീഡർബോർഡ് (Footer Banner)',
+    desc: 'പേജിന്റെ ഏറ്റവും താഴെ പ്രധാന ലിങ്കുകൾക്ക് മുകളിൽ പ്രദർശിപ്പിക്കുന്നു.',
+    size: '728 × 90 px',
+  },
+  sticky_mobile: {
+    name: 'മൊബൈൽ സ്റ്റിക്കി ആങ്കർ (Sticky Mobile Banner)',
+    desc: 'മൊബൈൽ ഫോണുകളിൽ സ്ക്രീനിന്റെ അടിഭാഗത്ത് സ്ഥിരമായി നിൽക്കുന്ന പരസ്യ സ്ലോട്ട്.',
+    size: '320 × 50 px',
+  },
+};
+
+const DEFAULT_SLOT_FIELDS: Omit<AdSlotConfig, 'slot_key'> = {
+  is_active: true,
+  ad_type: 'direct',
+  provider: 'direct',
+  direct_banner_url: '',
+  direct_image_url: '',
+  direct_target_url: '',
+  direct_link_url: '',
+  direct_alt_text: '',
+  direct_title: '',
+  direct_campaign_name: '',
+  direct_sponsor_name: '',
+  adsense_slot_id: '',
+  impressions: 0,
+  clicks: 0,
+};
+
+function buildInitialSlotsMap(): Record<AdSlotKey, AdSlotConfig> {
+  const map: Partial<Record<AdSlotKey, AdSlotConfig>> = {};
+  (Object.keys(SLOT_LABELS) as AdSlotKey[]).forEach((key) => {
+    map[key] = {
+      ...DEFAULT_SLOT_FIELDS,
+      slot_key: key,
+    };
+  });
+  return map as Record<AdSlotKey, AdSlotConfig>;
+}
+
 export default function AdminAdsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -11,14 +67,48 @@ export default function AdminAdsPage() {
     publisher_id: 'ca-pub-9988776655443322',
     auto_ads_enabled: true,
   });
-  const [slots, setSlots] = useState<Record<AdSlotKey, AdSlotConfig>>({} as any);
+  const [slots, setSlots] = useState<Record<AdSlotKey, AdSlotConfig>>(buildInitialSlotsMap);
 
   useEffect(() => {
     fetch('/api/v1/ads')
       .then((res) => res.json())
       .then((data) => {
-        if (data.adsense) setAdsense(data.adsense);
-        if (data.slots) setSlots(data.slots);
+        if (data.adsense) {
+          setAdsense({
+            publisher_id: data.adsense.publisher_id || '',
+            auto_ads_enabled: data.adsense.auto_ads_enabled ?? true,
+          });
+        }
+        if (data.slots) {
+          const map = buildInitialSlotsMap();
+          const list: AdSlotConfig[] = Array.isArray(data.slots)
+            ? data.slots
+            : Object.values(data.slots);
+
+          list.forEach((s) => {
+            if (s && s.slot_key && map[s.slot_key]) {
+              map[s.slot_key] = {
+                ...map[s.slot_key],
+                ...s,
+                is_active: s.is_active ?? true,
+                provider: s.provider || (s.ad_type === 'adsense' ? 'adsense' : 'direct'),
+                ad_type: s.ad_type || s.provider || 'direct',
+                direct_banner_url: s.direct_banner_url || s.direct_image_url || '',
+                direct_image_url: s.direct_image_url || s.direct_banner_url || '',
+                direct_target_url: s.direct_target_url || s.direct_link_url || '',
+                direct_link_url: s.direct_link_url || s.direct_target_url || '',
+                direct_alt_text: s.direct_alt_text || s.direct_title || '',
+                direct_title: s.direct_title || s.direct_alt_text || '',
+                direct_campaign_name: s.direct_campaign_name || s.direct_sponsor_name || '',
+                direct_sponsor_name: s.direct_sponsor_name || s.direct_campaign_name || '',
+                adsense_slot_id: s.adsense_slot_id || '',
+                impressions: s.impressions ?? 0,
+                clicks: s.clicks ?? 0,
+              };
+            }
+          });
+          setSlots(map);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -41,7 +131,9 @@ export default function AdminAdsPage() {
 
       if (res.ok) {
         setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000);
+        setTimeout(() => setSaveSuccess(false), 3500);
+      } else {
+        alert('പരസ്യ ക്രമീകരണങ്ങൾ സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.');
       }
     } catch (err) {
       console.error('Failed to save ads:', err);
@@ -52,13 +144,35 @@ export default function AdminAdsPage() {
   };
 
   const updateSlot = (key: AdSlotKey, field: keyof AdSlotConfig, value: any) => {
-    setSlots((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
+    setSlots((prev) => {
+      const current = prev[key] || { ...DEFAULT_SLOT_FIELDS, slot_key: key };
+      const updated: AdSlotConfig = {
+        ...current,
         [field]: value,
-      },
-    }));
+      };
+
+      // Keep mirrored fields in sync for legacy compatibility
+      if (field === 'provider') {
+        updated.ad_type = value;
+      }
+      if (field === 'direct_banner_url') {
+        updated.direct_image_url = value;
+      }
+      if (field === 'direct_target_url') {
+        updated.direct_link_url = value;
+      }
+      if (field === 'direct_alt_text') {
+        updated.direct_title = value;
+      }
+      if (field === 'direct_campaign_name') {
+        updated.direct_sponsor_name = value;
+      }
+
+      return {
+        ...prev,
+        [key]: updated,
+      };
+    });
   };
 
   if (loading) {
@@ -68,34 +182,6 @@ export default function AdminAdsPage() {
       </div>
     );
   }
-
-  const slotLabels: Record<AdSlotKey, { name: string; desc: string; size: string }> = {
-    header_banner: {
-      name: 'ഹെഡർ ലീഡർബോർഡ് (Header Banner)',
-      desc: 'ഹോം പേജിന്റെ മുകൾഭാഗത്ത് ലോഗോയ്ക്കും പ്രധാന വാർത്തകൾക്കും താഴെ പ്രദർശിപ്പിക്കുന്നു.',
-      size: '728 × 90 px',
-    },
-    sidebar_banner: {
-      name: 'സൈഡ്ബാർ എം.പി.യു (Sidebar MPU)',
-      desc: 'വാർത്തകളുടെയും ഹോം പേജിന്റെയും വലതുവശത്ത് നിരക്കുകൾക്ക് താഴെ പ്രദർശിപ്പിക്കുന്നു.',
-      size: '300 × 250 px',
-    },
-    article_middle: {
-      name: 'ലേഖനത്തിനിടയിലെ പരസ്യം (In-Article)',
-      desc: 'വായനക്കാർ ലേഖനം വായിക്കുമ്പോൾ 3-ാം പാരഗ്രാഫിനു ശേഷം സ്വാഭാവികമായി ദൃശ്യമാകുന്നു.',
-      size: 'റെസ്പോൺസീവ് (Responsive)',
-    },
-    footer_banner: {
-      name: 'ഫൂട്ടർ ലീഡർബോർഡ് (Footer Banner)',
-      desc: 'പേജിന്റെ ഏറ്റവും താഴെ പ്രധാന ലിങ്കുകൾക്ക് മുകളിൽ പ്രദർശിപ്പിക്കുന്നു.',
-      size: '728 × 90 px',
-    },
-    sticky_mobile: {
-      name: 'മൊബൈൽ സ്റ്റിക്കി ആങ്കർ (Sticky Mobile Banner)',
-      desc: 'മൊബൈൽ ഫോണുകളിൽ സ്ക്രീനിന്റെ അടിഭാഗത്ത് സ്ഥിരമായി നിൽക്കുന്ന പരസ്യ സ്ലോട്ട്.',
-      size: '320 × 50 px',
-    },
-  };
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
@@ -114,7 +200,7 @@ export default function AdminAdsPage() {
         <button
           type="submit"
           disabled={saving}
-          className="bg-accent hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition-all shadow-sm flex items-center space-x-2"
+          className="bg-accent hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-lg text-xs transition-all shadow-sm flex items-center space-x-2 disabled:opacity-50"
         >
           {saving ? (
             <span>സേവ് ചെയ്യുന്നു...</span>
@@ -152,7 +238,7 @@ export default function AdminAdsPage() {
             </label>
             <input
               type="text"
-              value={adsense.publisher_id}
+              value={adsense.publisher_id || ''}
               onChange={(e) => setAdsense({ ...adsense, publisher_id: e.target.value })}
               placeholder="ca-pub-XXXXXXXXXXXXXXXX"
               className="w-full bg-surface-raised border border-border-input rounded-lg px-3 py-2 font-mono text-text focus:outline-none focus:border-accent"
@@ -170,7 +256,7 @@ export default function AdminAdsPage() {
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={adsense.auto_ads_enabled}
+                  checked={Boolean(adsense.auto_ads_enabled)}
                   onChange={(e) => setAdsense({ ...adsense, auto_ads_enabled: e.target.checked })}
                   className="sr-only peer"
                 />
@@ -193,19 +279,12 @@ export default function AdminAdsPage() {
           പ്രദർശന പരസ്യ സ്ലോട്ടുകൾ (Display Ad Placements)
         </h2>
 
-        {(Object.keys(slotLabels) as AdSlotKey[]).map((key) => {
+        {(Object.keys(SLOT_LABELS) as AdSlotKey[]).map((key) => {
           const slot = slots[key] || {
+            ...DEFAULT_SLOT_FIELDS,
             slot_key: key,
-            is_active: true,
-            provider: 'direct',
-            direct_banner_url: '',
-            direct_target_url: '',
-            direct_alt_text: '',
-            direct_campaign_name: '',
-            impressions: 0,
-            clicks: 0,
           };
-          const meta = slotLabels[key];
+          const meta = SLOT_LABELS[key];
 
           return (
             <div key={key} className="bg-surface border border-border rounded-xl p-5 shadow-card space-y-4">
@@ -223,15 +302,15 @@ export default function AdminAdsPage() {
                 {/* Status Toggle & Analytics */}
                 <div className="flex items-center space-x-4">
                   <div className="text-right text-[11px] font-mono text-text-muted hidden sm:block">
-                    <span>👁️ {slot.impressions?.toLocaleString('en-IN') || 0} ഇംപ്രഷൻസ്</span>
+                    <span>👁️ {(slot.impressions || 0).toLocaleString('en-IN')} ഇംപ്രഷൻസ്</span>
                     <span className="mx-2">•</span>
-                    <span className="text-accent font-bold">🖱️ {slot.clicks?.toLocaleString('en-IN') || 0} ക്ലിക്കുകൾ</span>
+                    <span className="text-accent font-bold">🖱️ {(slot.clicks || 0).toLocaleString('en-IN')} ക്ലിക്കുകൾ</span>
                   </div>
 
-                  <label className="flex items-center space-x-2 cursor-pointer">
+                  <label className="flex items-center space-x-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
-                      checked={slot.is_active}
+                      checked={Boolean(slot.is_active)}
                       onChange={(e) => updateSlot(key, 'is_active', e.target.checked)}
                       className="rounded text-accent focus:ring-accent"
                     />
@@ -247,7 +326,7 @@ export default function AdminAdsPage() {
                 <div>
                   <label className="block font-bold text-text mb-1">പരസ്യ ദാതാവ് (Provider)</label>
                   <select
-                    value={slot.provider}
+                    value={slot.provider || 'direct'}
                     onChange={(e) => updateSlot(key, 'provider', e.target.value)}
                     className="w-full bg-surface-raised border border-border-input rounded-lg px-3 py-2 text-text font-semibold focus:outline-none focus:border-accent"
                   >

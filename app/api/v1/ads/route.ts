@@ -24,21 +24,44 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Check if updating AdSense global settings
+    // 1. Bulk update: { adsense, slots }
+    if (body.adsense || body.slots) {
+      if (body.adsense) {
+        newsStore.updateAdSenseSettings(body.adsense);
+      }
+      if (body.slots) {
+        const slotsToUpdate = Array.isArray(body.slots)
+          ? body.slots
+          : Object.values(body.slots);
+        for (const slot of slotsToUpdate) {
+          if (slot && typeof slot === 'object' && slot.slot_key) {
+            newsStore.updateAdSlot(slot.slot_key, slot);
+          }
+        }
+      }
+      try { revalidatePath('/', 'page'); } catch {}
+      return NextResponse.json({
+        success: true,
+        adsense: newsStore.getAdSenseSettings(),
+        slots: newsStore.getAdSlots()
+      });
+    }
+
+    // 2. AdSense global settings update
     if (body.type === 'adsense_settings') {
-      const updated = newsStore.updateAdSenseSettings(body.settings);
+      const updated = newsStore.updateAdSenseSettings(body.settings || body.adsense || {});
       try { revalidatePath('/', 'page'); } catch {}
       return NextResponse.json({ success: true, adsense: updated });
     }
 
-    // Updating specific ad slot
+    // 3. Updating specific ad slot
     if (body.slot_key) {
-      const updatedSlot = newsStore.updateAdSlot(body.slot_key, body.data);
+      const updatedSlot = newsStore.updateAdSlot(body.slot_key, body.data || body);
       try { revalidatePath('/', 'page'); } catch {}
       return NextResponse.json({ success: true, slot: updatedSlot });
     }
 
-    return NextResponse.json({ error: 'slot_key or type required' }, { status: 400 });
+    return NextResponse.json({ error: 'slot_key, adsense, or slots required' }, { status: 400 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update ads' }, { status: 500 });
   }
